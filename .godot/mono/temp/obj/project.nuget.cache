@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "1Vdub8UvhOr73OpYAHMi85HwRtcXKcya6oHsSKIDH5pMeHzYP5SnsjdxSWTaA1SyXVB1aUgRDec4wwMADulADg==",
+  "success": true,
+  "projectFilePath": "G:\\Projects\\Godot\\Melodica\\Melodica.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\leven\\.nuget\\packages\\godot.sourcegenerators\\4.2.1\\godot.sourcegenerators.4.2.1.nupkg.sha512",
+    "C:\\Users\\leven\\.nuget\\packages\\godotsharp\\4.2.1\\godotsharp.4.2.1.nupkg.sha512",
+    "C:\\Users\\leven\\.nuget\\packages\\godotsharpeditor\\4.2.1\\godotsharpeditor.4.2.1.nupkg.sha512"
+  ],
+  "logs": []
+}

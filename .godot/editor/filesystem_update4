@@ -1,0 +1,9 @@
+res://MainMenu.tscn
+res://Camera.cs
+res://MainMenu.cs
+res://Scripts/Camera.cs
+res://Scripts/MainMenu.cs
+res://Scripts/LogoAnimator.cs
+res://Scripts/TitleAnimator.cs
+res://Themes/MenuTheme.tres
+res://Themes/TabBackgroundTheme.tres
