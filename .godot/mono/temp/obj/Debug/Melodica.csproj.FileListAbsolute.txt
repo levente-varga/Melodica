@@ -15,3 +15,4 @@ G:\Projects\Godot\Melodica\.godot\mono\temp\obj\Debug\refint\Melodica.dll
 G:\Projects\Godot\Melodica\.godot\mono\temp\obj\Debug\Melodica.pdb
 G:\Projects\Godot\Melodica\.godot\mono\temp\obj\Debug\Melodica.genruntimeconfig.cache
 G:\Projects\Godot\Melodica\.godot\mono\temp\obj\Debug\ref\Melodica.dll
+G:\Projects\Godot\Melodica\.godot\mono\temp\obj\Debug\Melodica.sourcelink.json

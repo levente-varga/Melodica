@@ -1,0 +1,582 @@
+[gd_scene load_steps=25 format=3 uid="uid://dfseh2nlnqk48"]
+
+[ext_resource type="Script" path="res://Scripts/MainMenu.cs" id="1_bug31"]
+[ext_resource type="AudioStream" uid="uid://jj7a2exrq3ux" path="res://Music/Pulse of Darkness.mp3" id="2_1pqhv"]
+[ext_resource type="Script" path="res://Scripts/MusicPlayer.cs" id="3_lesv6"]
+[ext_resource type="Script" path="res://Scripts/Camera.cs" id="3_xl4os"]
+[ext_resource type="Theme" uid="uid://cf7rjg5kmbto1" path="res://Themes/MenuTheme.tres" id="4_amdwp"]
+[ext_resource type="Script" path="res://Scripts/PlayMenu.cs" id="4_i4ner"]
+[ext_resource type="Texture2D" uid="uid://cpb4k32p4f80b" path="res://Assets/Images/Logo/P.png" id="5_fo5rk"]
+[ext_resource type="Texture2D" uid="uid://bhn354kobvq1e" path="res://Assets/Images/Logo/L.png" id="6_i27tw"]
+[ext_resource type="Texture2D" uid="uid://b4neiu12omq0i" path="res://Assets/Images/Logo/A.png" id="7_shi8g"]
+[ext_resource type="Texture2D" uid="uid://cxfauf0o0vdep" path="res://Assets/Images/Logo/Y.png" id="8_yu7r2"]
+[ext_resource type="Texture2D" uid="uid://ctcysuusg4ng2" path="res://Assets/Images/Logo/I.png" id="9_rdyf7"]
+[ext_resource type="Texture2D" uid="uid://hrcv5x35ar7c" path="res://Assets/Images/Logo/B.png" id="10_7dg2w"]
+[ext_resource type="Texture2D" uid="uid://niwv7sv8hvmp" path="res://Assets/Images/Logo/R.png" id="11_efej5"]
+[ext_resource type="Script" path="res://Scripts/SettingsMenu.cs" id="12_l6yye"]
+[ext_resource type="FontFile" uid="uid://tbbinxn4vijd" path="res://Fonts/Inter/Inter-Light.ttf" id="13_7iqpg"]
+[ext_resource type="Texture2D" uid="uid://c4gt00a6p30mn" path="res://Assets/Images/Logo/S.png" id="14_xdba5"]
+[ext_resource type="Texture2D" uid="uid://c0c3yixmv6ps3" path="res://Assets/Images/Logo/E.png" id="15_lngd0"]
+[ext_resource type="Texture2D" uid="uid://cfg26fmuo2m4p" path="res://Assets/Images/Logo/T.png" id="16_md0f1"]
+[ext_resource type="Texture2D" uid="uid://dq6f41jrarr2l" path="res://Assets/Images/Logo/N.png" id="17_31ydl"]
+[ext_resource type="Texture2D" uid="uid://7gljgvx05k" path="res://Assets/Images/Logo/G.png" id="18_fmuao"]
+[ext_resource type="Texture2D" uid="uid://cydpr7ke25xvw" path="res://Assets/Images/Logo/M.png" id="19_6wy07"]
+[ext_resource type="Texture2D" uid="uid://dgm0yv36ttur4" path="res://Assets/Images/Logo/O.png" id="20_g5h86"]
+[ext_resource type="Texture2D" uid="uid://dc37j1tbj25w4" path="res://Assets/Images/Logo/D.png" id="21_mtecl"]
+[ext_resource type="Texture2D" uid="uid://uupowmni7bkh" path="res://Assets/Images/Logo/C.png" id="22_8u7cr"]
+
+[node name="Menu" type="Node2D"]
+position = Vector2(1280, 540)
+script = ExtResource("1_bug31")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_1pqhv")
+script = ExtResource("3_lesv6")
+
+[node name="Background" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.180392, 0.188235, 0.196078, 1)
+
+[node name="Camera" type="Camera2D" parent="."]
+ignore_rotation = false
+script = ExtResource("3_xl4os")
+
+[node name="Play" type="Node2D" parent="."]
+script = ExtResource("4_i4ner")
+
+[node name="UI" type="CanvasLayer" parent="Play"]
+offset = Vector2(2560, 0)
+transform = Transform2D(1, 0, 0, 1, 2560, 0)
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="Play/UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.180392, 0.188235, 0.196078, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="bQuickPlay" type="Button" parent="Play/UI"]
+offset_left = 500.0
+offset_top = 600.0
+offset_right = 800.0
+offset_bottom = 650.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "QUICK PLAY"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="bLibrary" type="Button" parent="Play/UI"]
+offset_left = 500.0
+offset_top = 670.0
+offset_right = 800.0
+offset_bottom = 720.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "LIBRARY"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="bLevelEditor" type="Button" parent="Play/UI"]
+offset_left = 500.0
+offset_top = 740.0
+offset_right = 800.0
+offset_bottom = 790.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "LEVEL EDITOR"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="bBack" type="Button" parent="Play/UI"]
+offset_left = 500.0
+offset_top = 960.0
+offset_right = 800.0
+offset_bottom = 1010.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "BACK
+"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Control" parent="Play/UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="P" type="Sprite2D" parent="Play/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("5_fo5rk")
+
+[node name="L" type="Sprite2D" parent="Play/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("6_i27tw")
+
+[node name="A" type="Sprite2D" parent="Play/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("7_shi8g")
+
+[node name="Y" type="Sprite2D" parent="Play/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("8_yu7r2")
+
+[node name="Library" type="Node2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="Library"]
+offset = Vector2(2560, 1080)
+transform = Transform2D(1, 0, 0, 1, 2560, 1080)
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="Library/UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.180392, 0.188235, 0.196078, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="bBack" type="Button" parent="Library/UI"]
+offset_left = 500.0
+offset_top = 960.0
+offset_right = 800.0
+offset_bottom = 1010.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "BACK
+"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Control" parent="Library/UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="L" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("6_i27tw")
+
+[node name="I" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("9_rdyf7")
+
+[node name="B" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("10_7dg2w")
+
+[node name="R" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("11_efej5")
+
+[node name="A" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("7_shi8g")
+
+[node name="R2" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("11_efej5")
+
+[node name="Y" type="Sprite2D" parent="Library/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("8_yu7r2")
+
+[node name="Settings" type="Node2D" parent="."]
+script = ExtResource("12_l6yye")
+
+[node name="UI" type="CanvasLayer" parent="Settings"]
+offset = Vector2(-2560, 0)
+transform = Transform2D(1, 0, 0, 1, -2560, 0)
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="Settings/UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.180392, 0.188235, 0.196078, 1)
+
+[node name="bBack" type="Button" parent="Settings/UI"]
+offset_left = 500.0
+offset_top = 960.0
+offset_right = 800.0
+offset_bottom = 1010.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "BACK"
+flat = true
+alignment = 0
+
+[node name="TabContainer" type="TabContainer" parent="Settings/UI"]
+layout_direction = 1
+offset_left = 500.0
+offset_top = 400.0
+offset_right = 2060.0
+offset_bottom = 900.0
+theme = ExtResource("4_amdwp")
+
+[node name="GAME" type="MarginContainer" parent="Settings/UI/TabContainer"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Settings" type="VBoxContainer" parent="Settings/UI/TabContainer/GAME"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="MenuAnimations" type="HBoxContainer" parent="Settings/UI/TabContainer/GAME/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/GAME/Settings/MenuAnimations"]
+layout_mode = 2
+text = "Menu animations"
+vertical_alignment = 1
+
+[node name="Value" type="CheckButton" parent="Settings/UI/TabContainer/GAME/Settings/MenuAnimations"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_amdwp")
+flat = true
+icon_alignment = 2
+
+[node name="DISPLAY" type="MarginContainer" parent="Settings/UI/TabContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Settings" type="VBoxContainer" parent="Settings/UI/TabContainer/DISPLAY"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="ScreenResolution" type="HBoxContainer" parent="Settings/UI/TabContainer/DISPLAY/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/DISPLAY/Settings/ScreenResolution"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+text = "Resolution"
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/UI/TabContainer/DISPLAY/Settings/ScreenResolution"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Value" type="OptionButton" parent="Settings/UI/TabContainer/DISPLAY/Settings/ScreenResolution"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+theme_override_fonts/font = ExtResource("13_7iqpg")
+flat = true
+item_count = 2
+selected = 0
+allow_reselect = true
+popup/item_0/text = "2560x1080"
+popup/item_0/id = 0
+popup/item_1/text = "1920x1080"
+popup/item_1/id = 1
+
+[node name="Windowed" type="HBoxContainer" parent="Settings/UI/TabContainer/DISPLAY/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/DISPLAY/Settings/Windowed"]
+layout_mode = 2
+text = "Windowed"
+vertical_alignment = 1
+
+[node name="Value" type="CheckButton" parent="Settings/UI/TabContainer/DISPLAY/Settings/Windowed"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_amdwp")
+flat = true
+icon_alignment = 2
+
+[node name="VSync" type="HBoxContainer" parent="Settings/UI/TabContainer/DISPLAY/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/DISPLAY/Settings/VSync"]
+layout_mode = 2
+text = "V-sync"
+vertical_alignment = 1
+
+[node name="Value" type="CheckButton" parent="Settings/UI/TabContainer/DISPLAY/Settings/VSync"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_amdwp")
+flat = true
+icon_alignment = 2
+
+[node name="MSAA" type="HBoxContainer" parent="Settings/UI/TabContainer/DISPLAY/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/DISPLAY/Settings/MSAA"]
+layout_mode = 2
+text = "Multi-Sampling Anti-Aliasing (MSAA)"
+vertical_alignment = 1
+
+[node name="Value" type="CheckButton" parent="Settings/UI/TabContainer/DISPLAY/Settings/MSAA"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_amdwp")
+flat = true
+icon_alignment = 2
+
+[node name="AUDIO" type="MarginContainer" parent="Settings/UI/TabContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Settings" type="VBoxContainer" parent="Settings/UI/TabContainer/AUDIO"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Master" type="HBoxContainer" parent="Settings/UI/TabContainer/AUDIO/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/AUDIO/Settings/Master"]
+layout_mode = 2
+text = "Master"
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/UI/TabContainer/AUDIO/Settings/Master"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Value" type="HSlider" parent="Settings/UI/TabContainer/AUDIO/Settings/Master"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="Settings/UI/TabContainer/AUDIO/Settings/Master"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+theme_override_fonts/font = ExtResource("13_7iqpg")
+text = "100"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Music" type="HBoxContainer" parent="Settings/UI/TabContainer/AUDIO/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/AUDIO/Settings/Music"]
+layout_mode = 2
+text = "Music"
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/UI/TabContainer/AUDIO/Settings/Music"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Value" type="HSlider" parent="Settings/UI/TabContainer/AUDIO/Settings/Music"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="Settings/UI/TabContainer/AUDIO/Settings/Music"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+theme_override_fonts/font = ExtResource("13_7iqpg")
+text = "100"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SoundEffects" type="HBoxContainer" parent="Settings/UI/TabContainer/AUDIO/Settings"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Name" type="Label" parent="Settings/UI/TabContainer/AUDIO/Settings/SoundEffects"]
+layout_mode = 2
+text = "Sound effects"
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/UI/TabContainer/AUDIO/Settings/SoundEffects"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="Value" type="HSlider" parent="Settings/UI/TabContainer/AUDIO/Settings/SoundEffects"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="Settings/UI/TabContainer/AUDIO/Settings/SoundEffects"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+theme_override_fonts/font = ExtResource("13_7iqpg")
+text = "100"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CONTROLS" type="MarginContainer" parent="Settings/UI/TabContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Settings" type="VBoxContainer" parent="Settings/UI/TabContainer/CONTROLS"]
+layout_mode = 2
+theme = ExtResource("4_amdwp")
+
+[node name="Title" type="Control" parent="Settings/UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="S" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("14_xdba5")
+
+[node name="E" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("15_lngd0")
+
+[node name="T" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("16_md0f1")
+
+[node name="T2" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("16_md0f1")
+
+[node name="I" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("9_rdyf7")
+
+[node name="N" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("17_31ydl")
+
+[node name="G" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("18_fmuao")
+
+[node name="S2" type="Sprite2D" parent="Settings/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("14_xdba5")
+
+[node name="MainMenu" type="Node2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="MainMenu"]
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="MainMenu/UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.180392, 0.188235, 0.196078, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="bPlay" type="Button" parent="MainMenu/UI"]
+offset_left = 500.0
+offset_top = 600.0
+offset_right = 800.0
+offset_bottom = 650.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "PLAY"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="bSettings" type="Button" parent="MainMenu/UI"]
+offset_left = 500.0
+offset_top = 670.0
+offset_right = 800.0
+offset_bottom = 720.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "SETTINGS
+"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="bQuit" type="Button" parent="MainMenu/UI"]
+offset_left = 500.0
+offset_top = 740.0
+offset_right = 800.0
+offset_bottom = 790.0
+theme = ExtResource("4_amdwp")
+theme_type_variation = &"FlatButton"
+text = "QUIT"
+flat = true
+alignment = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Control" parent="MainMenu/UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="M" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("19_6wy07")
+
+[node name="E" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("15_lngd0")
+
+[node name="L" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("6_i27tw")
+
+[node name="O" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("20_g5h86")
+
+[node name="D" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("21_mtecl")
+
+[node name="I" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("9_rdyf7")
+
+[node name="C" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("22_8u7cr")
+
+[node name="A" type="Sprite2D" parent="MainMenu/UI/Title"]
+position = Vector2(1280, 200)
+texture = ExtResource("7_shi8g")

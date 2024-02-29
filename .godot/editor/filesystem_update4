@@ -1,9 +1,10 @@
-res://MainMenu.tscn
-res://Camera.cs
-res://MainMenu.cs
+res://Scenes/Game.tscn
+res://Themes/TabBackgroundTheme.tres
+res://Themes/MenuTheme.tres
+res://Scenes/MainMenu.tscn
 res://Scripts/Camera.cs
 res://Scripts/MainMenu.cs
-res://Scripts/LogoAnimator.cs
+res://Scripts/PlayMenu.cs
+res://Scripts/SettingsMenu.cs
 res://Scripts/TitleAnimator.cs
-res://Themes/MenuTheme.tres
-res://Themes/TabBackgroundTheme.tres
+res://Scripts/MusicPlayer.cs

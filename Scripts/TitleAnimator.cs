@@ -12,7 +12,7 @@ public partial class TitleAnimator : Control
 	const int letterGap = 50;
 	float horizontalLerpStrength = 0;
 	const float desiredLerpStrength = 3;
-	List<float> verticalAccelerations;
+	List<float> verticalOffset;
 	int currentLetter = 1;
 	double bpm = 122;
 
@@ -23,15 +23,13 @@ public partial class TitleAnimator : Control
 	Timer metronome;
 	Timer delay;
 
-	AudioStreamPlayer musicPlayer;
-
-	Vector2 center = new Vector2(Settings.screenResolution.X / 2, 200);
+	Vector2 center = new Vector2(Settings.Display.Resolution.X / 2, 200);
 	public Vector2 Center {
 		get { return center; }
 		set {
 			center = new Vector2(
-				Mathf.Max(0, Mathf.Min(Settings.screenResolution.X, value.X)),
-				Mathf.Max(0, Mathf.Min(Settings.screenResolution.Y, value.Y)));
+				Mathf.Clamp(value.X, 0, Settings.Display.Resolution.X),
+				Mathf.Clamp(value.Y, 0, Settings.Display.Resolution.Y));
 		}
 	}
 
@@ -66,8 +64,12 @@ public partial class TitleAnimator : Control
 		LoadLetterSprites(pathToText, text.ToUpper());
 		CalculateDesiredPositions();
 
-		verticalAccelerations = new List<float>();
-		foreach (var _ in letters) verticalAccelerations.Add(0);
+		verticalOffset = new List<float>();
+		foreach (var _ in letters) verticalOffset.Add(0);
+
+		if (!Settings.Game.MenuAnimations)
+			for (int i = 0; i < letters.Count; i++)
+				letters[i].Position = desiredPositions[i];
 
         delay = new Timer { 
 			OneShot = true, 
@@ -99,7 +101,8 @@ public partial class TitleAnimator : Control
 	private void OnMetronomeTick() {
 		if (currentLetter < 0 || currentLetter >= letters.Count) currentLetter = 0;
 		if (letters.Count == 0) return;
-		verticalAccelerations[currentLetter] = -20;
+		if (Settings.Game.MenuAnimations)
+			verticalOffset[currentLetter] = -30 * horizontalLerpStrength;
 		currentLetter++;
 	}
 
@@ -110,10 +113,10 @@ public partial class TitleAnimator : Control
 
 			letter.Position = new Vector2(
 				Mathf.Lerp(letter.Position.X, desiredPosition.X, (float)delta * horizontalLerpStrength), 
-				Mathf.Lerp(letter.Position.Y + verticalAccelerations[i], desiredPosition.Y, (float)delta * desiredLerpStrength * 4));
+				Mathf.Lerp(letter.Position.Y, desiredPosition.Y + verticalOffset[i], (float)delta * desiredLerpStrength * 4));
 
-			horizontalLerpStrength = Mathf.Lerp(horizontalLerpStrength, desiredLerpStrength, (float)delta * 0.7f);
-			verticalAccelerations[i] = Mathf.Lerp(verticalAccelerations[i], 0, (float)delta * 0.7f);
+			horizontalLerpStrength = Mathf.Lerp(horizontalLerpStrength, desiredLerpStrength, (float)delta * 0.2f);
+			verticalOffset[i] = Mathf.Lerp(verticalOffset[i], 0, (float)delta * 0.7f);
 		}
 	}
 }

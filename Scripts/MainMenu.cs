@@ -3,56 +3,83 @@ using System;
 
 public partial class MainMenu : Node2D
 {
-	private Button _levelSelectButton;
-	private Button _settingsButton;
-	private Button _quitButton;
-	private Button _settingsBackButton;
-	private Button _levelSelectBackButton;
-	private Camera _camera;
+	private Button bPlay;
+	private Button bSettings;
+	private Button bQuit;
+	private Button bSettingsBack;
+	private Button bPlayBack;
+	private Button bLibrary;
+	private Button bLibraryBack;
+	private Camera camera;
 
-	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		_levelSelectButton = GetNode<Button>("MainMenu/UI/LevelSelectButton");
-		_settingsButton = GetNode<Button>("MainMenu/UI/SettingsButton");
-		_quitButton = GetNode<Button>("MainMenu/UI/QuitButton");
-		_settingsBackButton = GetNode<Button>("Settings/UI/BackButton");
-		_levelSelectBackButton = GetNode<Button>("Play/UI/BackButton");
-		_camera = GetNode<Camera>("Camera");
-
-		_levelSelectButton.Pressed += OnLevelSelectButtonPressed;
-		_settingsButton.Pressed += OnSettingsButtonPressed;
-		_quitButton.Pressed += OnQuitButtonPressed;
-		_settingsBackButton.Pressed += OnBackButtonPressed;
-		_levelSelectBackButton.Pressed += OnBackButtonPressed;
-
-		AddChild(new TitleAnimator("MainMenu/UI/", "MELODICA"));
-		AddChild(new TitleAnimator("Settings/UI/", "SETTINGS"));
-		AddChild(new TitleAnimator("Play/UI/", "PLAY"));
+		GetNodes();
+		SubscribeToEvents();
+		SetupTitleAnimators();
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
 	}
 
+	private void GetNodes() {
+		bPlay = GetNode<Button>("MainMenu/UI/bPlay");
+		bSettings = GetNode<Button>("MainMenu/UI/bSettings");
+		bQuit = GetNode<Button>("MainMenu/UI/bQuit");
+		bLibrary = GetNode<Button>("Play/UI/bLibrary");
+
+		bSettingsBack = GetNode<Button>("Settings/UI/bBack");
+		bPlayBack = GetNode<Button>("Play/UI/bBack");
+		bLibraryBack = GetNode<Button>("Library/UI/bBack");
+
+		camera = GetNode<Camera>("Camera");
+	}
+
+	private void SubscribeToEvents() {
+		bPlay.Pressed += OnLevelSelectButtonPressed;
+		bSettings.Pressed += OnSettingsButtonPressed;
+		bQuit.Pressed += OnQuitButtonPressed;
+		bSettingsBack.Pressed += OnBackButtonPressed;
+		bPlayBack.Pressed += OnBackButtonPressed;
+		bLibraryBack.Pressed += OnLibraryBackButtonPressed;
+		bLibrary.Pressed += OnLibraryButtonPressed;
+	}
+
+	private void SetupTitleAnimators() {
+		AddChild(new TitleAnimator("MainMenu/UI/Title/", "MELODICA"));
+		AddChild(new TitleAnimator("Settings/UI/Title/", "SETTINGS"));
+		AddChild(new TitleAnimator("Play/UI/Title/", "PLAY"));
+		AddChild(new TitleAnimator("Library/UI/Title/", "LIBRARY"));
+	}
+
 	private void OnLevelSelectButtonPressed() {
-		_camera.DesiredPosition = new Vector2(2560, 0);
-		_camera.DesiredRotation = 0;
+		camera.DesiredPosition = new Vector2(2560, 0);
+		camera.DesiredRotation = 0;
 	}
 
 	private void OnSettingsButtonPressed() {
-		_camera.DesiredPosition = new Vector2(-2560, 0);
-		_camera.DesiredRotation = 0;
+		camera.DesiredPosition = new Vector2(-2560, 0);
+		camera.DesiredRotation = 0;
 	}
 
 	private void OnQuitButtonPressed() {
 		GetTree().Quit();
 	}
 
+	private void OnLibraryButtonPressed() {
+		camera.DesiredPosition = new Vector2(2560, 1080);
+		camera.DesiredRotation = 0;
+	}
+
 	private void OnBackButtonPressed() {
-		_camera.DesiredPosition = new Vector2(0, 0);
-		_camera.DesiredRotation = 0;
+		camera.DesiredPosition = new Vector2(0, 0);
+		camera.DesiredRotation = 0;
+	}
+
+	private void OnLibraryBackButtonPressed() {
+		camera.DesiredPosition = new Vector2(2560, 0);
+		camera.DesiredRotation = 0;
 	}
 
 	public override void _Notification(int what)
