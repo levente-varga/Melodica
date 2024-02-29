@@ -67,9 +67,7 @@ public partial class TitleAnimator : Control
 		verticalOffset = new List<float>();
 		foreach (var _ in letters) verticalOffset.Add(0);
 
-		if (!Settings.Game.MenuAnimations)
-			for (int i = 0; i < letters.Count; i++)
-				letters[i].Position = desiredPositions[i];
+		if (!Settings.Game.MenuAnimations) PutLettersToDesiredPositions();
 
         delay = new Timer { 
 			OneShot = true, 
@@ -82,9 +80,20 @@ public partial class TitleAnimator : Control
 
 	public override void _Process(double delta)
 	{
-		if (animationEnabled) {
+		if (!Settings.Game.MenuAnimations)
+		{
+			PutLettersToDesiredPositions();
+		}
+		else if (animationEnabled) 
+		{
 			AnimateLetters(delta);
 		}
+	}
+
+	private void PutLettersToDesiredPositions() {
+		if (!Settings.Game.MenuAnimations)
+			for (int i = 0; i < letters.Count; i++)
+				letters[i].Position = desiredPositions[i];
 	}
 
 	private void StartAnimation() {
