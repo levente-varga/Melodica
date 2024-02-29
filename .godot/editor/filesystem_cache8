@@ -3,7 +3,7 @@ ea4bc82a6ad023ab7ee23ee620429895
 export_presets.cfg::TextFile::-1::1709141199::0::1::::<><>::
 icon.svg::CompressedTexture2D::7262513078900716307::1708725024::1708725034::1::::<><>::
 README.md::TextFile::-1::1709072737::0::1::::<><>::
-settings.cfg::TextFile::-1::1709142761::0::1::::<><>::
+settings.cfg::TextFile::-1::1709173313::0::1::::<><>::
 ::res://Assets/::1709054358
 ::res://Assets/Images/::1709076113
 Arrow.png::CompressedTexture2D::7477960424547193069::1709071032::1709071036::1::::<><>::
@@ -14,7 +14,7 @@ SliderHandleHovered.png::CompressedTexture2D::1669119323152123254::1709075425::1
 SliderHandleSelected.png::CompressedTexture2D::9008173397221050666::1709075425::1709075430::1::::<><>::
 ToggleOff.png::CompressedTexture2D::5318794490599984221::1709073492::1709073494::1::::<><>::
 ToggleOn.png::CompressedTexture2D::1356447375092596215::1709073492::1709073494::1::::<><>::
-::res://Assets/Images/Logo/::1709083600
+::res://Assets/Images/Logo/::1709173240
 A.png::CompressedTexture2D::4448992306198996154::1709064592::1709055675::1::::<><>::
 B.png::CompressedTexture2D::526576875486087206::1709083566::1709083600::1::::<><>::
 C.png::CompressedTexture2D::1446001358501975295::1709064592::1709055675::1::::<><>::
@@ -23,9 +23,11 @@ E.png::CompressedTexture2D::6533434604988137028::1709064592::1709055675::1::::<>
 F.png::CompressedTexture2D::5775162445008825422::1709064592::1709064595::1::::<><>::
 G.png::CompressedTexture2D::1954250493657074::1709064592::1709062632::1::::<><>::
 H.png::CompressedTexture2D::4511161245895683917::1709064592::1709062632::1::::<><>::
-I.png::CompressedTexture2D::6112048586323722147::1709064592::1709055675::1::::<><>::
+I.png::CompressedTexture2D::6112048586323722147::1709173354::1709173358::1::::<><>::
+J.png::CompressedTexture2D::4696575001356211018::1709173187::1709173240::1::::<><>::
+K.png::CompressedTexture2D::2430667238599528955::1709173189::1709173240::1::::<><>::
 L.png::CompressedTexture2D::2906334688840188080::1709064592::1709055675::1::::<><>::
-M.png::CompressedTexture2D::6464509557763316828::1709064592::1709055675::1::::<><>::
+M.png::CompressedTexture2D::6464509557763316828::1709172820::1709173240::1::::<><>::
 N.png::CompressedTexture2D::8346636012934183117::1709064592::1709062632::1::::<><>::
 O.png::CompressedTexture2D::7606729577508629591::1709064592::1709055675::1::::<><>::
 P.png::CompressedTexture2D::5829518563524067951::1709064592::1709062632::1::::<><>::
@@ -35,6 +37,7 @@ S.png::CompressedTexture2D::6821903681637111737::1709064592::1709064400::1::::<>
 T.png::CompressedTexture2D::5137866852599365969::1709064592::1709064595::1::::<><>::
 U.png::CompressedTexture2D::3554159447938415301::1709064592::1709062632::1::::<><>::
 V.png::CompressedTexture2D::2618581684396060663::1709064592::1709064595::1::::<><>::
+W.png::CompressedTexture2D::1844158807962061215::1709172823::1709173240::1::::<><>::
 X.png::CompressedTexture2D::3681902725008520936::1709064592::1709064595::1::::<><>::
 Y.png::CompressedTexture2D::6397542677616538203::1709064592::1709064595::1::::<><>::
 Z.png::CompressedTexture2D::7145830097192870708::1709064592::1709062632::1::::<><>::
@@ -63,16 +66,17 @@ Raleway-SemiBold.ttf::FontFile::8603209868646506368::1708907329::1708907351::1::
 ::res://Libraries/::1708729974
 ::res://Music/::1709060502
 Pulse of Darkness.mp3::AudioStreamMP3::652223361675422239::1709052748::1709060502::1::::<><>::
-::res://Scenes/::1709142758
-Game.tscn::PackedScene::7135729555529799093::1709142758::0::1::::<><>::
-MainMenu.tscn::PackedScene::7547621876101655955::1709142758::0::1::::<><>::res://Scripts/MainMenu.cs<>uid://jj7a2exrq3ux::::res://Music/Pulse of Darkness.mp3<>res://Scripts/Camera.cs<>uid://cf7rjg5kmbto1::::res://Themes/MenuTheme.tres<>res://Scripts/PlayMenu.cs<>uid://cpb4k32p4f80b::::res://Assets/Images/Logo/P.png<>uid://bhn354kobvq1e::::res://Assets/Images/Logo/L.png<>uid://b4neiu12omq0i::::res://Assets/Images/Logo/A.png<>uid://cxfauf0o0vdep::::res://Assets/Images/Logo/Y.png<>uid://ctcysuusg4ng2::::res://Assets/Images/Logo/I.png<>uid://hrcv5x35ar7c::::res://Assets/Images/Logo/B.png<>uid://niwv7sv8hvmp::::res://Assets/Images/Logo/R.png<>res://Scripts/SettingsMenu.cs<>uid://tbbinxn4vijd::::res://Fonts/Inter/Inter-Light.ttf<>uid://c4gt00a6p30mn::::res://Assets/Images/Logo/S.png<>uid://c0c3yixmv6ps3::::res://Assets/Images/Logo/E.png<>uid://cfg26fmuo2m4p::::res://Assets/Images/Logo/T.png<>uid://dq6f41jrarr2l::::res://Assets/Images/Logo/N.png<>uid://7gljgvx05k::::res://Assets/Images/Logo/G.png<>uid://cydpr7ke25xvw::::res://Assets/Images/Logo/M.png<>uid://dgm0yv36ttur4::::res://Assets/Images/Logo/O.png<>uid://dc37j1tbj25w4::::res://Assets/Images/Logo/D.png<>uid://uupowmni7bkh::::res://Assets/Images/Logo/C.png
-::res://Scripts/::1709128422
-Camera.cs::CSharpScript::-1::1709080416::0::1::::<>Camera2D<>::
+::res://Scenes/::1709173309
+Game.tscn::PackedScene::7135729555529799093::1709173309::0::1::::<><>::
+MainMenu.tscn::PackedScene::7547621876101655955::1709173309::0::1::::<><>::res://Scripts/MainMenu.cs<>uid://jj7a2exrq3ux::::res://Music/Pulse of Darkness.mp3<>res://Scripts/MusicPlayer.cs<>res://Scripts/Camera.cs<>uid://cf7rjg5kmbto1::::res://Themes/MenuTheme.tres<>res://Scripts/PlayMenu.cs<>uid://cpb4k32p4f80b::::res://Assets/Images/Logo/P.png<>uid://bhn354kobvq1e::::res://Assets/Images/Logo/L.png<>uid://b4neiu12omq0i::::res://Assets/Images/Logo/A.png<>uid://cxfauf0o0vdep::::res://Assets/Images/Logo/Y.png<>uid://ctcysuusg4ng2::::res://Assets/Images/Logo/I.png<>uid://hrcv5x35ar7c::::res://Assets/Images/Logo/B.png<>uid://niwv7sv8hvmp::::res://Assets/Images/Logo/R.png<>res://Scripts/SettingsMenu.cs<>uid://tbbinxn4vijd::::res://Fonts/Inter/Inter-Light.ttf<>uid://c4gt00a6p30mn::::res://Assets/Images/Logo/S.png<>uid://c0c3yixmv6ps3::::res://Assets/Images/Logo/E.png<>uid://cfg26fmuo2m4p::::res://Assets/Images/Logo/T.png<>uid://dq6f41jrarr2l::::res://Assets/Images/Logo/N.png<>uid://7gljgvx05k::::res://Assets/Images/Logo/G.png<>uid://cydpr7ke25xvw::::res://Assets/Images/Logo/M.png<>uid://dgm0yv36ttur4::::res://Assets/Images/Logo/O.png<>uid://dc37j1tbj25w4::::res://Assets/Images/Logo/D.png<>uid://uupowmni7bkh::::res://Assets/Images/Logo/C.png
+::res://Scripts/::1709170881
+Camera.cs::CSharpScript::-1::1709171771::0::1::::<>Camera2D<>::
 MainMenu.cs::CSharpScript::-1::1709140663::0::1::::<>Node2D<>::
 PlayMenu.cs::CSharpScript::-1::1709129441::0::1::::<>Node2D<>::
+MusicPlayer.cs::CSharpScript::-1::1709171045::0::1::::<>AudioStreamPlayer<>::
 Settings.cs::CSharpScript::-1::1709142670::0::1::::<><>::
-SettingsMenu.cs::CSharpScript::-1::1709141858::0::1::::<>Node2D<>::
-TitleAnimator.cs::CSharpScript::-1::1709141442::0::1::::<>Control<>::
-::res://Themes/::1709140776
-MenuTheme.tres::Theme::5190894296683136202::1709140776::0::1::::<><>::uid://d4e1tdfaiwh25::::res://Fonts/Raleway/Raleway-Regular.ttf<>uid://desm6eqwgoobd::::res://Assets/Images/Arrow.png<>uid://tlcqwsoxhtu2::::res://Assets/Images/ToggleOn.png<>uid://b764ssvs3vo8k::::res://Themes/TabBackgroundTheme.tres<>uid://dap2b8ecdg8d5::::res://Assets/Images/CheckOn.png<>uid://ch1p1eall2wmf::::res://Assets/Images/ToggleOff.png<>uid://c1rk50g5pbxlo::::res://Assets/Images/SliderHandle.png<>uid://dc5n3fqv5x2ql::::res://Assets/Images/CheckOff.png<>uid://d1lvkgrbr440m::::res://Assets/Images/SliderHandleSelected.png<>uid://tbbinxn4vijd::::res://Fonts/Inter/Inter-Light.ttf<>uid://deadrcdnpeij6::::res://Fonts/Raleway/Raleway-Light.ttf
-TabBackgroundTheme.tres::StyleBoxFlat::4698253306283799052::1709140776::0::1::::<><>::
+SettingsMenu.cs::CSharpScript::-1::1709170886::0::1::::<>Node2D<>::
+TitleAnimator.cs::CSharpScript::-1::1709172613::0::1::::<>Control<>::
+::res://Themes/::1709169935
+MenuTheme.tres::Theme::5190894296683136202::1709169935::0::1::::<><>::uid://d4e1tdfaiwh25::::res://Fonts/Raleway/Raleway-Regular.ttf<>uid://desm6eqwgoobd::::res://Assets/Images/Arrow.png<>uid://tlcqwsoxhtu2::::res://Assets/Images/ToggleOn.png<>uid://b764ssvs3vo8k::::res://Themes/TabBackgroundTheme.tres<>uid://dap2b8ecdg8d5::::res://Assets/Images/CheckOn.png<>uid://ch1p1eall2wmf::::res://Assets/Images/ToggleOff.png<>uid://c1rk50g5pbxlo::::res://Assets/Images/SliderHandle.png<>uid://dc5n3fqv5x2ql::::res://Assets/Images/CheckOff.png<>uid://d1lvkgrbr440m::::res://Assets/Images/SliderHandleSelected.png<>uid://tbbinxn4vijd::::res://Fonts/Inter/Inter-Light.ttf<>uid://deadrcdnpeij6::::res://Fonts/Raleway/Raleway-Light.ttf
+TabBackgroundTheme.tres::StyleBoxFlat::4698253306283799052::1709169935::0::1::::<><>::

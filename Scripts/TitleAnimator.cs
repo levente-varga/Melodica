@@ -14,6 +14,8 @@ public partial class TitleAnimator : Control
 	const float desiredLerpStrength = 3;
 	List<float> verticalOffset;
 	int currentLetter = 1;
+	int skips = 0;
+	int skipsLeft;
 	double bpm = 122;
 
 	// Text to animate
@@ -69,6 +71,9 @@ public partial class TitleAnimator : Control
 
 		if (!Settings.Game.MenuAnimations) PutLettersToDesiredPositions();
 
+		skips = (4 - letters.Count % 4) % 4;
+		skipsLeft = skips;
+
         delay = new Timer { 
 			OneShot = true, 
 			WaitTime = delaySec,
@@ -108,7 +113,16 @@ public partial class TitleAnimator : Control
 	}
 
 	private void OnMetronomeTick() {
-		if (currentLetter < 0 || currentLetter >= letters.Count) currentLetter = 0;
+		if (currentLetter < 0) currentLetter = 0; 
+		else if (currentLetter >= letters.Count) {
+			if (skipsLeft-- > 0) {
+				return;
+			}
+			else {
+				skipsLeft = skips;
+				currentLetter = 0;
+			}
+		}
 		if (letters.Count == 0) return;
 		if (Settings.Game.MenuAnimations)
 			verticalOffset[currentLetter] = -30 * horizontalLerpStrength;
