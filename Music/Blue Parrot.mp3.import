@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ck2u862gdfmma"
+path="res://.godot/imported/Blue Parrot.mp3-2032d78af07db2acff654ab1bf629904.mp3str"
+
+[deps]
+
+source_file="res://Music/Blue Parrot.mp3"
+dest_files=["res://.godot/imported/Blue Parrot.mp3-2032d78af07db2acff654ab1bf629904.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

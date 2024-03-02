@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://8npp705gi0jj"]
+
+[ext_resource type="Texture2D" uid="uid://ronot14e2gdm" path="res://Assets/Images/ButtonB.png" id="1_1ak0w"]
+
+[node name="Note" type="Sprite2D"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_1ak0w")
