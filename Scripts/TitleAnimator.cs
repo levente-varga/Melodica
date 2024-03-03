@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public partial class TitleAnimator : Control
 {
@@ -17,13 +18,11 @@ public partial class TitleAnimator : Control
 
 	float horizontalLerpStrength = 0;
 	List<float> verticalOffset;
-	int currentLetter = 1;
+	int currentLetter = 0;
 	int beatSkips = 0;
 	int beatSkipsLeft;
 	bool startInPlace = false;
 
-	// Text to animate
-	string pathToText;
 	string title;
 
 	Timer metronome;
@@ -84,13 +83,16 @@ public partial class TitleAnimator : Control
 		beatSkips = (4 - letters.Count % 4) % 4;
 		beatSkipsLeft = beatSkips;
 
-        delay = new Timer { 
-			OneShot = true, 
-			WaitTime = placementAnimationDelaySec,
-			Autostart = true, 
-		};
-		delay.Timeout += StartAnimation;
-		AddChild(delay);
+		if (startInPlace) StartAnimation();
+		else {
+			delay = new Timer { 
+				OneShot = true, 
+				WaitTime = placementAnimationDelaySec,
+				Autostart = true, 
+			};
+			delay.Timeout += StartAnimation;
+			AddChild(delay);
+		}
 	}
 
 	public override void _Process(double delta)
@@ -106,9 +108,9 @@ public partial class TitleAnimator : Control
 	}
 
 	private void PutLettersToDesiredPositions() {
-		if (!Settings.Game.MenuAnimations)
-			for (int i = 0; i < letters.Count; i++)
-				letters[i].Position = desiredPositions[i];
+		horizontalLerpStrength = desiredLerpStrength;
+		for (int i = 0; i < letters.Count; i++)
+			letters[i].Position = desiredPositions[i];
 	}
 
 	private void StartAnimation() {
@@ -119,10 +121,12 @@ public partial class TitleAnimator : Control
 			WaitTime = 60.0 / music.BPM
 		};
 		metronome.Timeout += OnMetronomeTick;
+		metronome.TreeEntered += OnMetronomeTick;
 		AddChild(metronome);
 	}
 
 	private void OnMetronomeTick() {
+		if (letters.Count == 0) return;
 		if (currentLetter < 0) currentLetter = 0; 
 		else if (currentLetter >= letters.Count) {
 			if (beatSkipsLeft-- > 0) {
@@ -133,7 +137,6 @@ public partial class TitleAnimator : Control
 				currentLetter = 0;
 			}
 		}
-		if (letters.Count == 0) return;
 		if (Settings.Game.MenuAnimations)
 			verticalOffset[currentLetter] = -30 * horizontalLerpStrength;
 		currentLetter++;
