@@ -1,26 +1,30 @@
 using Godot;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public partial class TitleAnimator : Control
 {
-	const float delaySec = 2;
+	MusicData music;
+
+	const int letterWidth = 150;
+	const int letterGap = 50;
+	const float placementAnimationDelaySec = 2;
+	const float desiredLerpStrength = 3;
+
+
 	bool animationEnabled = false;
 	List<Sprite2D> letters;
 	List<Vector2> desiredPositions;
-	const int letterWidth = 150;
-	const int letterGap = 50;
+
 	float horizontalLerpStrength = 0;
-	const float desiredLerpStrength = 3;
 	List<float> verticalOffset;
 	int currentLetter = 1;
-	int skips = 0;
-	int skipsLeft;
-	double bpm = 122;
+	int beatSkips = 0;
+	int beatSkipsLeft;
+	bool startInPlace = false;
 
 	// Text to animate
 	string pathToText;
-	string text;
+	string title;
 
 	Timer metronome;
 	Timer delay;
@@ -35,19 +39,25 @@ public partial class TitleAnimator : Control
 		}
 	}
 
-	public TitleAnimator(string pathToText, string text) {
-		this.pathToText = pathToText;
-		this.text = text;
+	public TitleAnimator(string title, MusicData music, Vector2 center, bool startInPlace = false) {
+		this.title = title;
+		this.center = center;
+		this.startInPlace = startInPlace;
+		this.music = music;
 	}
 
-	private void LoadLetterSprites(string pathToText, string text) {
-		Dictionary<char, int> foundLetters = new Dictionary<char, int>();
-		for (char c = 'A'; c <= 'Z'; c++) foundLetters.Add(c, 0);
-
+	private void CreateLetterSprites() {
 		letters = new List<Sprite2D>();
-		foreach (char letter in text) {
-			int count = ++foundLetters[letter];
-			letters.Add(GetParent().GetNode<Sprite2D>(pathToText + letter.ToString() + (count > 1 ? count.ToString() : "")));
+		foreach (char letter in title.ToUpper()) {
+            Sprite2D letterSprite = new Sprite2D
+            {
+                Texture = ImageTexture.CreateFromImage(
+					Image.LoadFromFile("res://Assets/Images/Letters/" + letter + ".png")
+				),
+				Position = center
+            };
+            letters.Add(letterSprite);
+			AddChild(letterSprite);
 		}
 	}
 
@@ -63,20 +73,20 @@ public partial class TitleAnimator : Control
 
 	public override void _Ready()
 	{
-		LoadLetterSprites(pathToText, text.ToUpper());
+		CreateLetterSprites();
 		CalculateDesiredPositions();
 
 		verticalOffset = new List<float>();
 		foreach (var _ in letters) verticalOffset.Add(0);
 
-		if (!Settings.Game.MenuAnimations) PutLettersToDesiredPositions();
+		if (!Settings.Game.MenuAnimations || startInPlace) PutLettersToDesiredPositions();
 
-		skips = (4 - letters.Count % 4) % 4;
-		skipsLeft = skips;
+		beatSkips = (4 - letters.Count % 4) % 4;
+		beatSkipsLeft = beatSkips;
 
         delay = new Timer { 
 			OneShot = true, 
-			WaitTime = delaySec,
+			WaitTime = placementAnimationDelaySec,
 			Autostart = true, 
 		};
 		delay.Timeout += StartAnimation;
@@ -106,7 +116,7 @@ public partial class TitleAnimator : Control
 		metronome = new Timer { 
 			OneShot = false, 
 			Autostart = true, 
-			WaitTime = 60.0 / bpm
+			WaitTime = 60.0 / music.BPM
 		};
 		metronome.Timeout += OnMetronomeTick;
 		AddChild(metronome);
@@ -115,11 +125,11 @@ public partial class TitleAnimator : Control
 	private void OnMetronomeTick() {
 		if (currentLetter < 0) currentLetter = 0; 
 		else if (currentLetter >= letters.Count) {
-			if (skipsLeft-- > 0) {
+			if (beatSkipsLeft-- > 0) {
 				return;
 			}
 			else {
-				skipsLeft = skips;
+				beatSkipsLeft = beatSkips;
 				currentLetter = 0;
 			}
 		}

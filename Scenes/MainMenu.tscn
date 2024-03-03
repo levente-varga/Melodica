@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dfseh2nlnqk48"]
+[gd_scene load_steps=9 format=3 uid="uid://dfseh2nlnqk48"]
 
 [ext_resource type="Script" path="res://Scripts/MainMenu.cs" id="1_bug31"]
 [ext_resource type="AudioStream" uid="uid://jj7a2exrq3ux" path="res://Music/Pulse of Darkness.mp3" id="2_1pqhv"]
@@ -6,24 +6,8 @@
 [ext_resource type="Script" path="res://Scripts/Camera.cs" id="3_xl4os"]
 [ext_resource type="Theme" uid="uid://cf7rjg5kmbto1" path="res://Themes/MenuTheme.tres" id="4_amdwp"]
 [ext_resource type="Script" path="res://Scripts/PlayMenu.cs" id="4_i4ner"]
-[ext_resource type="Texture2D" uid="uid://cpb4k32p4f80b" path="res://Assets/Images/Logo/P.png" id="5_fo5rk"]
-[ext_resource type="Texture2D" uid="uid://bhn354kobvq1e" path="res://Assets/Images/Logo/L.png" id="6_i27tw"]
-[ext_resource type="Texture2D" uid="uid://b4neiu12omq0i" path="res://Assets/Images/Logo/A.png" id="7_shi8g"]
-[ext_resource type="Texture2D" uid="uid://cxfauf0o0vdep" path="res://Assets/Images/Logo/Y.png" id="8_yu7r2"]
-[ext_resource type="Texture2D" uid="uid://ctcysuusg4ng2" path="res://Assets/Images/Logo/I.png" id="9_rdyf7"]
-[ext_resource type="Texture2D" uid="uid://hrcv5x35ar7c" path="res://Assets/Images/Logo/B.png" id="10_7dg2w"]
-[ext_resource type="Texture2D" uid="uid://niwv7sv8hvmp" path="res://Assets/Images/Logo/R.png" id="11_efej5"]
 [ext_resource type="Script" path="res://Scripts/SettingsMenu.cs" id="12_l6yye"]
 [ext_resource type="FontFile" uid="uid://tbbinxn4vijd" path="res://Fonts/Inter/Inter-Light.ttf" id="13_7iqpg"]
-[ext_resource type="Texture2D" uid="uid://c4gt00a6p30mn" path="res://Assets/Images/Logo/S.png" id="14_xdba5"]
-[ext_resource type="Texture2D" uid="uid://c0c3yixmv6ps3" path="res://Assets/Images/Logo/E.png" id="15_lngd0"]
-[ext_resource type="Texture2D" uid="uid://cfg26fmuo2m4p" path="res://Assets/Images/Logo/T.png" id="16_md0f1"]
-[ext_resource type="Texture2D" uid="uid://dq6f41jrarr2l" path="res://Assets/Images/Logo/N.png" id="17_31ydl"]
-[ext_resource type="Texture2D" uid="uid://7gljgvx05k" path="res://Assets/Images/Logo/G.png" id="18_fmuao"]
-[ext_resource type="Texture2D" uid="uid://cydpr7ke25xvw" path="res://Assets/Images/Logo/M.png" id="19_6wy07"]
-[ext_resource type="Texture2D" uid="uid://dgm0yv36ttur4" path="res://Assets/Images/Logo/O.png" id="20_g5h86"]
-[ext_resource type="Texture2D" uid="uid://dc37j1tbj25w4" path="res://Assets/Images/Logo/D.png" id="21_mtecl"]
-[ext_resource type="Texture2D" uid="uid://uupowmni7bkh" path="res://Assets/Images/Logo/C.png" id="22_8u7cr"]
 
 [node name="Menu" type="Node2D"]
 position = Vector2(1280, 540)
@@ -115,28 +99,6 @@ flat = true
 alignment = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="Title" type="Control" parent="Play/UI"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="P" type="Sprite2D" parent="Play/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("5_fo5rk")
-
-[node name="L" type="Sprite2D" parent="Play/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("6_i27tw")
-
-[node name="A" type="Sprite2D" parent="Play/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("7_shi8g")
-
-[node name="Y" type="Sprite2D" parent="Play/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("8_yu7r2")
-
 [node name="Library" type="Node2D" parent="."]
 
 [node name="UI" type="CanvasLayer" parent="Library"]
@@ -165,40 +127,6 @@ text = "BACK
 flat = true
 alignment = 0
 metadata/_edit_use_anchors_ = true
-
-[node name="Title" type="Control" parent="Library/UI"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="L" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("6_i27tw")
-
-[node name="I" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("9_rdyf7")
-
-[node name="B" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("10_7dg2w")
-
-[node name="R" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("11_efej5")
-
-[node name="A" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("7_shi8g")
-
-[node name="R2" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("11_efej5")
-
-[node name="Y" type="Sprite2D" parent="Library/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("8_yu7r2")
 
 [node name="Settings" type="Node2D" parent="."]
 script = ExtResource("12_l6yye")
@@ -454,44 +382,6 @@ theme = ExtResource("4_amdwp")
 layout_mode = 2
 theme = ExtResource("4_amdwp")
 
-[node name="Title" type="Control" parent="Settings/UI"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="S" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("14_xdba5")
-
-[node name="E" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("15_lngd0")
-
-[node name="T" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("16_md0f1")
-
-[node name="T2" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("16_md0f1")
-
-[node name="I" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("9_rdyf7")
-
-[node name="N" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("17_31ydl")
-
-[node name="G" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("18_fmuao")
-
-[node name="S2" type="Sprite2D" parent="Settings/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("14_xdba5")
-
 [node name="MainMenu" type="Node2D" parent="."]
 
 [node name="UI" type="CanvasLayer" parent="MainMenu"]
@@ -542,41 +432,3 @@ text = "QUIT"
 flat = true
 alignment = 0
 metadata/_edit_use_anchors_ = true
-
-[node name="Title" type="Control" parent="MainMenu/UI"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="M" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("19_6wy07")
-
-[node name="E" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("15_lngd0")
-
-[node name="L" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("6_i27tw")
-
-[node name="O" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("20_g5h86")
-
-[node name="D" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("21_mtecl")
-
-[node name="I" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("9_rdyf7")
-
-[node name="C" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("22_8u7cr")
-
-[node name="A" type="Sprite2D" parent="MainMenu/UI/Title"]
-position = Vector2(1280, 200)
-texture = ExtResource("7_shi8g")

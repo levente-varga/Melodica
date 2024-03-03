@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Godot;
 
-struct MusicData {
+public struct MusicData {
     public string Title;
     public string Composer;
     public double BPM;
@@ -10,7 +10,7 @@ struct MusicData {
     public double OffsetSec;
 }
 
-class Note {
+public class Note {
     public double TimeStampSec { get; private set; }
     double length;
     bool hold;
@@ -33,7 +33,7 @@ class Note {
     }
 }
 
-class LevelData {
+public class LevelData {
     string title;
     public MusicData Music { get; private set; }
 

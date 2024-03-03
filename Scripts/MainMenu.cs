@@ -12,6 +12,14 @@ public partial class MainMenu : Node2D
 	private Button bLibraryBack;
 	private Camera camera;
 
+
+	MusicData music = new MusicData {
+		Title = "",
+		Composer = "",
+		BPM = 122,
+		OffsetSec = 0
+	};
+
 	public override void _Ready()
 	{
 		GetNodes();
@@ -47,10 +55,10 @@ public partial class MainMenu : Node2D
 	}
 
 	private void SetupTitleAnimators() {
-		AddChild(new TitleAnimator("MainMenu/UI/Title/", "MELODICA"));
-		AddChild(new TitleAnimator("Settings/UI/Title/", "SETTINGS"));
-		AddChild(new TitleAnimator("Play/UI/Title/", "PLAY"));
-		AddChild(new TitleAnimator("Library/UI/Title/", "LIBRARY"));
+		GetNode("MainMenu/UI").AddChild(new TitleAnimator("MELODICA", music, new Vector2(1280, 200)));
+		GetNode("Settings/UI").AddChild(new TitleAnimator("SETTINGS", music, new Vector2(1280, 200)));
+		GetNode("Play/UI").AddChild(new TitleAnimator("PLAY", music, new Vector2(1280, 200)));
+		GetNode("Library/UI").AddChild(new TitleAnimator("LIBRARY", music, new Vector2(1280, 200)));
 	}
 
 	private void OnLevelSelectButtonPressed() {

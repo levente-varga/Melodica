@@ -35,8 +35,9 @@ public partial class Game : Node2D
 			levelData.AddNoteAndPause(Note.NoteButton.A, 1);
 		for (int i = 0; i < 8; i++)
 			levelData.AddNoteAndPause(Note.NoteButton.X, 1);
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < 6; i++)
 			levelData.AddNoteAndPause(Note.NoteButton.Y, 1);
+		levelData.AddPause(2);
 
 		levelData.AddNoteAndPause(Note.NoteButton.A, 2.5);
 		levelData.AddNoteAndPause(Note.NoteButton.B, 1.5);
@@ -111,5 +112,13 @@ public partial class Game : Node2D
 			notes.Add(instance);
 			GetNode<CanvasLayer>("CanvasLayer").AddChild(instance);
 		}
+	}
+
+	void ShowText(string text, double timeStamp, double duration, double fateDuration = 1) {
+		//AddChild();
+	}
+
+	void ShowTitle(string text, double timeStamp, double duration, double fadeDuration = 1) {
+
 	}
 }
