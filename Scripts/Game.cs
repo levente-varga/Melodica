@@ -10,6 +10,9 @@ public partial class Game : Node2D
 	AudioStreamPlayer musicPlayer;
 
 	Label label;
+	Timer correctionTimer;
+
+	bool showAccuracy = false;
 
 	const int linePosY = 860;
 	List<Sprite2D> notes;
@@ -62,6 +65,15 @@ public partial class Game : Node2D
 
 		CreateNotes();
 
+		correctionTimer = new Timer()
+		{
+			WaitTime = 0.5f,
+			Autostart = true,
+			OneShot = false,
+		};
+		correctionTimer.Timeout += CalculatCorrection;
+		AddChild(correctionTimer);
+
 		GetNode("UI").AddChild(new AnimatedTitle()
 		{
 			Text = "MELODICA",
@@ -102,7 +114,7 @@ public partial class Game : Node2D
 			FadeInSec = 1,
 			FadeOutSec = 2,
 		});
-		GetNode("UI").AddChild(new AnimatedLabel()
+		AnimatedLabel animatedLabel = new AnimatedLabel()
 		{
 			Text = "You get feedback on accuracy.",
 			Position = new Vector2(1600, 800),
@@ -110,7 +122,12 @@ public partial class Game : Node2D
 			Duration = 8.5,
 			FadeInSec = 1,
 			FadeOutSec = 2,
-		});
+		};
+		animatedLabel.OnFadeInStart += () =>
+		{
+			showAccuracy = true;
+		};
+		GetNode("UI").AddChild(animatedLabel);
 		GetNode("UI").AddChild(new AnimatedLabel()
 		{
 			Text = "First tutorial finished!",
@@ -150,47 +167,62 @@ public partial class Game : Node2D
 	}
 
 
-	double lastPlayhead = 0;
-	double lastMusicPosition = 0;
-	double musicPosition = 0;
+	double smoothPlayhead = 0;
+	double remainingCorrection = 0;
+	double correctionFactor = 30;
 	bool smoothen = true;
-	double correction = 0;
-	double correctionFactor = 3;
 	bool debug = true;
 	public override void _Process(double delta)
 	{
-		double playhead = musicPlayer.GetPlaybackPosition();
+		smoothPlayhead += delta;
+		double correction = remainingCorrection / correctionFactor;
+		smoothPlayhead += correction;
+		remainingCorrection -= correction;
 
-		lastMusicPosition = musicPosition;
-		if (smoothen)
-		{
-			musicPosition += delta;
-		}
-
-		if (playhead != lastPlayhead)
-		{
-			double difference = playhead - musicPosition;
-			correction += difference / correctionFactor;
-
-			if (!smoothen)
-			{
-				musicPosition = playhead;
-			}
-
-			lastPlayhead = playhead;
-		}
-
-		double currentCorrection = correction / correctionFactor;
-		correction -= currentCorrection;
-
-		if (smoothen)
-		{
-			musicPosition += currentCorrection;
-		}
-
-		MoveNotes(delta, correction * (smoothen ? 1 : 0));
+		MoveNotes(delta);
 		label.Text = string.Format("Smoothen: {0}, Correction: {1}{2:F5}", smoothen ? "true" : "false", correction < 0 ? "-" : " ", Mathf.Abs(correction));
 		HandleInput();
+	}
+
+	void CalculatCorrection()
+	{
+		double playhead = musicPlayer.GetPlaybackPosition();
+		double difference = playhead - smoothPlayhead;
+		remainingCorrection += difference;
+	}
+
+	private void MoveNotes(double delta)
+	{
+		float playhead = musicPlayer.GetPlaybackPosition();
+
+		for (int i = 0; i < notes.Count; i++)
+		{
+			notes[i].Position += new Vector2(0, (float)(delta * noteSpeedPixelPerSec));
+			test[i].Position = new Vector2(1400, linePosY - (float)((levelData.Notes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * noteSpeedPixelPerSec));
+			continue;
+
+
+			float distance = playhead - (float)levelData.Notes[i].TimeStampSec;
+			float A = 900, B = 3.5f;
+			notes[i].Position = new Vector2(
+				notes[i].Position.X,
+				linePosY + Mathf.Pow(distance + B, 5) + (distance + B) * 100f - A
+			);
+			notes[i].Scale = new Vector2(
+				-Mathf.Pow(distance - B, 2) / 4,
+				-Mathf.Pow(distance - B, 2) / 4
+			);
+
+
+			float startScale = 0.01f; // Initial scale when far away
+			float desiredScale = 0.2f; // Scale when crossing the line
+			float startPosition = 300; // Initial Y position
+
+			notes[i].Position = new Vector2(notes[i].Position.X, CalculatePosition(startPosition, linePosY, playhead, (float)levelData.Notes[i].TimeStampSec, 20));
+			float scale = CalculateScale2(startScale, desiredScale, (notes[i].Position.Y - startPosition) / (linePosY - startPosition));
+			notes[i].Scale = new Vector2(scale, scale);
+			if (i == 0) label.Text = notes[0].Position.ToString();
+		}
 	}
 
 	private void HandleInput()
@@ -224,7 +256,7 @@ public partial class Game : Node2D
 				case Note.Accuracy.Acceptable: text = "OK"; break;
 				default: text = "?"; break;
 			}
-			GetNode("UI").AddChild(new AnimatedLabel()
+			if (showAccuracy) GetNode("UI").AddChild(new AnimatedLabel()
 			{
 				Text = text,
 				Position = new Vector2(1260, 830),
@@ -244,27 +276,29 @@ public partial class Game : Node2D
 	{
 		if (levelData.Notes.Count == 0) return Note.Accuracy.None;
 
-		float playhead = musicPlayer.GetPlaybackPosition();
+		//float playhead = musicPlayer.GetPlaybackPosition();
 		Note candidate = null;
 		double minDistance = 0;
 
 		foreach (Note note in levelData.Notes)
 		{
 			if (note.Fired || note.ColorType != color) continue;
-			if (candidate == null || note.GetDistance(playhead) < minDistance)
+			if (candidate == null || note.GetDistance(smoothPlayhead) < minDistance)
 			{
-				minDistance = note.GetDistance(playhead);
+				minDistance = note.GetDistance(smoothPlayhead);
 				candidate = note;
 			}
 		}
 
-		GetNode("UI").AddChild(new AnimatedLabel()
+		if (debug) GetNode("UI").AddChild(new AnimatedLabel()
 		{
 			Text = $"{(candidate == null ? "No candidate" : $"{minDistance:F4}")}",
 			Font = "res://Fonts/SourceCodePro-Light.ttf",
+			Color = new Color(1, 1, 1, 0.2f),
 			Alignment = new AnimatedText.TextAlignment() { Horizontal = HorizontalAlignment.Right },
-			Position = new Vector2(1000, 800),
-			Velocity = new Vector2(0, -60),
+			Position = new Vector2(1260, 890),
+			Velocity = new Vector2(-200, 0),
+			Drag = 8,
 			StartAtSec = 0.001,
 			Duration = 0.2,
 			FadeInSec = 0,
@@ -273,40 +307,6 @@ public partial class Game : Node2D
 
 		if (candidate == null) return Note.Accuracy.None;
 		return candidate.Fire(musicPlayer.GetPlaybackPosition());
-	}
-
-	private void MoveNotes(double delta, double correction)
-	{
-		float playhead = musicPlayer.GetPlaybackPosition();
-
-		for (int i = 0; i < notes.Count; i++)
-		{
-			notes[i].Position += new Vector2(0, (float)(delta * noteSpeedPixelPerSec));
-			test[i].Position = new Vector2(1400, linePosY - (float)((levelData.Notes[i].TimeStampSec - (playhead - correction)) * noteSpeedPixelPerSec));
-			continue;
-
-
-			float distance = playhead - (float)levelData.Notes[i].TimeStampSec;
-			float A = 900, B = 3.5f;
-			notes[i].Position = new Vector2(
-				notes[i].Position.X,
-				linePosY + Mathf.Pow(distance + B, 5) + (distance + B) * 100f - A
-			);
-			notes[i].Scale = new Vector2(
-				-Mathf.Pow(distance - B, 2) / 4,
-				-Mathf.Pow(distance - B, 2) / 4
-			);
-
-
-			float startScale = 0.01f; // Initial scale when far away
-			float desiredScale = 0.2f; // Scale when crossing the line
-			float startPosition = 300; // Initial Y position
-
-			notes[i].Position = new Vector2(notes[i].Position.X, CalculatePosition(startPosition, linePosY, playhead, (float)levelData.Notes[i].TimeStampSec, 20));
-			float scale = CalculateScale2(startScale, desiredScale, (notes[i].Position.Y - startPosition) / (linePosY - startPosition));
-			notes[i].Scale = new Vector2(scale, scale);
-			if (i == 0) label.Text = notes[0].Position.ToString();
-		}
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -360,116 +360,5 @@ public partial class Game : Node2D
 			GetNode<CanvasLayer>("UI").AddChild(instance);
 			GetNode<CanvasLayer>("UI").AddChild(instance2);
 		}
-	}
-
-	void ShowAccuracyTest(Note.Accuracy accuracy)
-	{
-		switch (accuracy)
-		{
-			case Note.Accuracy.Perfect:
-				break;
-		}
-	}
-
-	void QueueText(string text, Vector2 position, double timeStamp, double duration, double fadeInDuration = 1, double fadeOutDuration = 1)
-	{
-		AnimationPhase phase = AnimationPhase.Waiting;
-
-		Label textNode = new Label
-		{
-			Name = "AnimatedText",
-			Text = text,
-			AnchorsPreset = 10,
-			Modulate = Color.Color8(255, 255, 255, 0),
-			Theme = ResourceLoader.Load<Theme>("res://Themes/MenuTheme.tres"),
-		};
-
-		GetNode("UI").AddChild(textNode);
-
-		textNode.Position = position - textNode.Size / 2;
-
-		Timer timer = new Timer();
-		AddChild(timer);
-		timer.Start(timeStamp);
-
-		timer.Timeout += () =>
-		{
-			switch (phase)
-			{
-				case AnimationPhase.Waiting:
-					timer.Start(fadeInDuration);
-					Tween fadeInTween = CreateTween();
-					phase = AnimationPhase.FadeIn;
-					fadeInTween.TweenProperty(textNode, "modulate", Color.Color8(255, 255, 255, 255), fadeInDuration);
-					break;
-				case AnimationPhase.FadeIn:
-					phase = AnimationPhase.Duration;
-					timer.Start(duration);
-					break;
-				case AnimationPhase.Duration:
-					timer.Start(fadeOutDuration);
-					phase = AnimationPhase.FadeOut;
-					Tween fadeOutTween = CreateTween();
-					fadeOutTween.TweenProperty(textNode, "modulate", Color.Color8(255, 255, 255, 0), fadeOutDuration);
-					break;
-				case AnimationPhase.FadeOut:
-					timer.OneShot = true;
-					textNode.Dispose();
-					break;
-			}
-		};
-	}
-
-	enum AnimationPhase
-	{
-		Waiting,
-		FadeIn,
-		Duration,
-		FadeOut,
-	}
-
-	void QueueTitle(string text, Vector2 position, double timeStamp, double duration, double fadeInDuration = 1, double fadeOutDuration = 1)
-	{
-		AnimationPhase phase = AnimationPhase.Waiting;
-
-		Node2D titleNode = new Node2D
-		{
-			Name = "AnimatedTitle",
-			Modulate = Color.Color8(255, 255, 255, 0)
-		};
-
-		GetNode("UI").AddChild(titleNode);
-		titleNode.AddChild(new TitleAnimator(text, levelData.Music, position, true));
-
-		Timer timer = new Timer();
-		AddChild(timer);
-		timer.Start(timeStamp);
-
-		timer.Timeout += () =>
-		{
-			switch (phase)
-			{
-				case AnimationPhase.Waiting:
-					timer.Start(fadeInDuration);
-					Tween fadeInTween = CreateTween();
-					phase = AnimationPhase.FadeIn;
-					fadeInTween.TweenProperty(titleNode, "modulate", Color.Color8(255, 255, 255, 255), fadeInDuration);
-					break;
-				case AnimationPhase.FadeIn:
-					phase = AnimationPhase.Duration;
-					timer.Start(duration);
-					break;
-				case AnimationPhase.Duration:
-					timer.Start(fadeOutDuration);
-					phase = AnimationPhase.FadeOut;
-					Tween fadeOutTween = CreateTween();
-					fadeOutTween.TweenProperty(titleNode, "modulate", Color.Color8(255, 255, 255, 0), fadeOutDuration);
-					break;
-				case AnimationPhase.FadeOut:
-					timer.OneShot = true;
-					titleNode.Dispose();
-					break;
-			}
-		};
 	}
 }
