@@ -5,6 +5,7 @@ public abstract partial class AnimatedText : Control
 {
     public string Text { set; get; } = "";
     public Vector2 Velocity { set; get; } = new Vector2(0, 0);
+    public double Drag { set; get; } = 0;
     public Color Color { set; get; } = new Color(1, 1, 1, 1);
     public double Duration { set; get; } = 0;
     public double StartAtSec { set; get; } = 0;
@@ -97,6 +98,7 @@ public abstract partial class AnimatedText : Control
         if (animationPhase != AnimationPhase.Waiting)
         {
             Position += Velocity * (float)delta;
+            Velocity -= Velocity * (float)Drag * (float)delta;
         }
     }
 }

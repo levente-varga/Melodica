@@ -24,9 +24,9 @@ public class Note
         Green, Red, Blue, Yellow
     }
 
-    const float perfectAccuracyRangeSec = 0.15f;
-    const float goodAccuracyRangeSec = 0.3f;
-    const float acceptableAccuracyRangeSec = 0.5f;
+    const float perfectAccuracyRangeSec = 0.045f;
+    const float goodAccuracyRangeSec = 0.11f;
+    const float acceptableAccuracyRangeSec = 0.25f;
     public enum Accuracy
     {
         None,       // Button press but no note in range
@@ -51,13 +51,14 @@ public class Note
 
         if (distance > acceptableAccuracyRangeSec)
         {
+            Fired = false;
             return Accuracy.None;
         }
-        else if (distance > acceptableAccuracyRangeSec)
+        else if (distance > goodAccuracyRangeSec)
         {
             return Accuracy.Acceptable;
         }
-        else if (distance > acceptableAccuracyRangeSec)
+        else if (distance > perfectAccuracyRangeSec)
         {
             return Accuracy.Good;
         }

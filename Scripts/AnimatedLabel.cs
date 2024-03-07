@@ -2,6 +2,8 @@ using Godot;
 
 public partial class AnimatedLabel : AnimatedText
 {
+    public string Font { get; set; } = "";
+
     private Label label;
 
     public AnimatedLabel()
@@ -21,7 +23,8 @@ public partial class AnimatedLabel : AnimatedText
 
         // Need to set manually, otherwise it will only take effect AFTER _Ready(), 
         // and that messes up the calculations with Size
-        label.AddThemeFontSizeOverride("", Theme.DefaultFontSize);
+        label.AddThemeFontSizeOverride("font_size", Theme.DefaultFontSize);
+        if (Font != "") label.AddThemeFontOverride("font", ResourceLoader.Load<Font>(Font));
 
         AddChild(label);
 

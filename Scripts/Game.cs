@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Tracing;
 
 public partial class Game : Node2D
 {
@@ -179,8 +178,6 @@ public partial class Game : Node2D
 			}
 
 			lastPlayhead = playhead;
-
-			if (debug) Debug.WriteLine($"Difference: {difference}");
 		}
 
 		double currentCorrection = correction / correctionFactor;
@@ -190,8 +187,6 @@ public partial class Game : Node2D
 		{
 			musicPosition += currentCorrection;
 		}
-
-		if (debug) Debug.WriteLine($"Correction: {currentCorrection} \t/ {correction}");
 
 		MoveNotes(delta, correction * (smoothen ? 1 : 0));
 		label.Text = string.Format("Smoothen: {0}, Correction: {1}{2:F5}", smoothen ? "true" : "false", correction < 0 ? "-" : " ", Mathf.Abs(correction));
@@ -219,9 +214,29 @@ public partial class Game : Node2D
 			accuracy = TryToFireBeatNote(Note.Color.Yellow);
 		}
 
-		if (accuracy != Note.Accuracy.Miss)
+		if (accuracy != Note.Accuracy.None)
 		{
-
+			string text = "";
+			switch (accuracy)
+			{
+				case Note.Accuracy.Perfect: text = "Perfect"; break;
+				case Note.Accuracy.Good: text = "Good"; break;
+				case Note.Accuracy.Acceptable: text = "OK"; break;
+				default: text = "?"; break;
+			}
+			GetNode("UI").AddChild(new AnimatedLabel()
+			{
+				Text = text,
+				Position = new Vector2(1260, 830),
+				Alignment = new AnimatedText.TextAlignment() { Horizontal = HorizontalAlignment.Right },
+				Velocity = new Vector2(-200, 0),
+				Drag = 8,
+				Color = accuracy == Note.Accuracy.Perfect ? Colors.Yellow : Colors.White,
+				StartAtSec = 0.001,
+				Duration = 0.2,
+				FadeInSec = 0,
+				FadeOutSec = 0.5,
+			});
 		}
 	}
 
@@ -242,6 +257,19 @@ public partial class Game : Node2D
 				candidate = note;
 			}
 		}
+
+		GetNode("UI").AddChild(new AnimatedLabel()
+		{
+			Text = $"{(candidate == null ? "No candidate" : $"{minDistance:F4}")}",
+			Font = "res://Fonts/SourceCodePro-Light.ttf",
+			Alignment = new AnimatedText.TextAlignment() { Horizontal = HorizontalAlignment.Right },
+			Position = new Vector2(1000, 800),
+			Velocity = new Vector2(0, -60),
+			StartAtSec = 0.001,
+			Duration = 0.2,
+			FadeInSec = 0,
+			FadeOutSec = 0.6,
+		});
 
 		if (candidate == null) return Note.Accuracy.None;
 		return candidate.Fire(musicPlayer.GetPlaybackPosition());
