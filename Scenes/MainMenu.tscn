@@ -177,6 +177,7 @@ theme = ExtResource("4_amdwp")
 
 [node name="Name" type="Label" parent="Settings/UI/TabContainer/GAME/Settings/MenuAnimations"]
 layout_mode = 2
+theme = ExtResource("4_amdwp")
 text = "Menu animations"
 vertical_alignment = 1
 
