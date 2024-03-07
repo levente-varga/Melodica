@@ -9,61 +9,25 @@ public partial class Game : Node2D
 
 	AudioStreamPlayer musicPlayer;
 
-	Label label;
+	Label lCorrection;
+	Label lSmoothen;
+	Label lPlayhead;
+	Label lSmoothPlayhead;
+	Label lDifference;
 	Timer correctionTimer;
 
 	bool showAccuracy = false;
 
 	const int linePosY = 860;
 	List<Sprite2D> notes;
-	List<Sprite2D> test;
 	const double noteSpeedPixelPerSec = 256;
 
 	public override void _Ready()
 	{
 		GetNodes();
-
-		levelData = new LevelData(new MusicData
-		{
-			Title = "Blue Parrot",
-			Composer = "Romain Garcia",
-			BPM = 123,
-			OffsetSec = 0,
-		});
-		levelData.StartComposing();
-		levelData.AddPause(64);
-		for (int i = 0; i < 32; i++)
-			levelData.AddNoteAndPause(Note.Color.Green, 1);
-
-		for (int i = 0; i < 8; i++)
-			levelData.AddNoteAndPause(Note.Color.Red, 1);
-		for (int i = 0; i < 8; i++)
-			levelData.AddNoteAndPause(Note.Color.Blue, 1);
-		for (int i = 0; i < 8; i++)
-			levelData.AddNoteAndPause(Note.Color.Yellow, 1);
-		for (int i = 0; i < 6; i++)
-			levelData.AddNoteAndPause(Note.Color.Green, 1);
-		levelData.AddPause(2);
-
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Blue, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Yellow, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Blue, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Yellow, 1.5);
-		levelData.AddNote(Note.Color.Green);
-
+		CreateLevelData();
 		CreateNotes();
+		CreateTexts();
 
 		correctionTimer = new Timer()
 		{
@@ -74,98 +38,18 @@ public partial class Game : Node2D
 		correctionTimer.Timeout += CalculatCorrection;
 		AddChild(correctionTimer);
 
-		GetNode("UI").AddChild(new AnimatedTitle()
+		Timer showAccuracyTimer = new Timer()
 		{
-			Text = "MELODICA",
-			Position = new Vector2(1280, 200),
-			StartAtSec = 0.01,
-			Duration = 4.5,
-			FadeInSec = 0,
-			FadeOutSec = 3,
-			Music = levelData.Music,
-			LetterExpansionAnimation = false,
-		});
-		GetNode("UI").AddChild(new AnimatedTitle()
-		{
-			Text = "TUTORIAL",
-			Position = new Vector2(1280, 200),
-			StartAtSec = 4,
-			Duration = 5.5,
-			FadeInSec = 3,
-			FadeOutSec = 3,
-			Music = levelData.Music,
-			LetterExpansionAnimation = false,
-		});
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "Hit the 'A' button when a note reaches the line!",
-			Position = new Vector2(1280, 500),
-			StartAtSec = 15.5,
-			Duration = 10.5,
-			FadeInSec = 1,
-			FadeOutSec = 0.3,
-		});
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "Press the button that matches the note!",
-			Position = new Vector2(1600, 800),
-			StartAtSec = 42,
-			Duration = 8.5,
-			FadeInSec = 1,
-			FadeOutSec = 2,
-		});
-		AnimatedLabel animatedLabel = new AnimatedLabel()
-		{
-			Text = "You get feedback on accuracy.",
-			Position = new Vector2(1600, 800),
-			StartAtSec = 59,
-			Duration = 8.5,
-			FadeInSec = 1,
-			FadeOutSec = 2,
+			WaitTime = 61.5,
+			Autostart = true,
+			OneShot = true,
 		};
-		animatedLabel.OnFadeInStart += () =>
+		showAccuracyTimer.Timeout += () =>
 		{
 			showAccuracy = true;
 		};
-		GetNode("UI").AddChild(animatedLabel);
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "First tutorial finished!",
-			Position = new Vector2(1280, 500),
-			StartAtSec = 78,
-			Duration = 6,
-			FadeInSec = 1,
-			FadeOutSec = 2,
-		});
+		AddChild(showAccuracyTimer);
 	}
-
-	float CalculateScale(float startScale, float desiredScale, float timeElapsed, float timestamp)
-	{
-		float growthFactor = Mathf.Pow(desiredScale / startScale, 1.0f / timestamp);
-		return startScale * Mathf.Pow(growthFactor, timeElapsed);
-	}
-
-	float CalculatePosition(float startPosition, float linePosition, float timeElapsed, float timestamp, float accelerationFactor)
-	{
-		float distance = linePosition - startPosition;
-		float speedFactor = distance / Mathf.Pow(timestamp, accelerationFactor);
-		return startPosition + speedFactor * Mathf.Pow(timeElapsed, accelerationFactor);
-	}
-
-	float CalculateScale2(float startScale, float desiredScale, float distanceFactor)
-	{
-		return desiredScale * MathF.Pow(distanceFactor, 1.2f);
-	}
-
-	float CalculatePosition2(float startPosition, float linePosition, float timeElapsed, float timestamp)
-	{
-		float totalDistance = linePosition - startPosition;
-		float timeLeft = timestamp - timeElapsed;
-		return startPosition + Mathf.Pow(timeElapsed - timestamp, 2) * totalDistance;
-		float speedFactor = totalDistance / Mathf.Pow(timestamp, 2);
-		return startPosition + speedFactor * Mathf.Pow(timeElapsed, 2);
-	}
-
 
 	double smoothPlayhead = 0;
 	double remainingCorrection = 0;
@@ -180,11 +64,22 @@ public partial class Game : Node2D
 		remainingCorrection -= correction;
 
 		MoveNotes(delta);
-		label.Text = string.Format("Smoothen: {0}, Correction: {1}{2:F5}", smoothen ? "true" : "false", correction < 0 ? "-" : " ", Mathf.Abs(correction));
+		UpdateDebugInfo();
 		HandleInput();
 	}
 
-	void CalculatCorrection()
+	private void UpdateDebugInfo()
+	{
+		double playhead = musicPlayer.GetPlaybackPosition();
+		lCorrection.Text = string.Format("Correction: {0}{1:F4}", remainingCorrection < 0 ? "-" : " ", Mathf.Abs(remainingCorrection));
+		lSmoothen.Text = string.Format("Smoothen:    {0}", smoothen ? "true " : "false");
+		lPlayhead.Text = string.Format("Playhead:    {0:F4}", playhead);
+		lSmoothPlayhead.Text = string.Format("Smooth:      {0:F4}", smoothPlayhead);
+		double difference = smoothPlayhead - playhead;
+		lDifference.Text = string.Format("Difference: {0}{1:F4}", difference < 0 ? "-" : " ", Mathf.Abs(difference));
+	}
+
+	private void CalculatCorrection()
 	{
 		double playhead = musicPlayer.GetPlaybackPosition();
 		double difference = playhead - smoothPlayhead;
@@ -197,31 +92,7 @@ public partial class Game : Node2D
 
 		for (int i = 0; i < notes.Count; i++)
 		{
-			notes[i].Position += new Vector2(0, (float)(delta * noteSpeedPixelPerSec));
-			test[i].Position = new Vector2(1400, linePosY - (float)((levelData.Notes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * noteSpeedPixelPerSec));
-			continue;
-
-
-			float distance = playhead - (float)levelData.Notes[i].TimeStampSec;
-			float A = 900, B = 3.5f;
-			notes[i].Position = new Vector2(
-				notes[i].Position.X,
-				linePosY + Mathf.Pow(distance + B, 5) + (distance + B) * 100f - A
-			);
-			notes[i].Scale = new Vector2(
-				-Mathf.Pow(distance - B, 2) / 4,
-				-Mathf.Pow(distance - B, 2) / 4
-			);
-
-
-			float startScale = 0.01f; // Initial scale when far away
-			float desiredScale = 0.2f; // Scale when crossing the line
-			float startPosition = 300; // Initial Y position
-
-			notes[i].Position = new Vector2(notes[i].Position.X, CalculatePosition(startPosition, linePosY, playhead, (float)levelData.Notes[i].TimeStampSec, 20));
-			float scale = CalculateScale2(startScale, desiredScale, (notes[i].Position.Y - startPosition) / (linePosY - startPosition));
-			notes[i].Scale = new Vector2(scale, scale);
-			if (i == 0) label.Text = notes[0].Position.ToString();
+			notes[i].Position = new Vector2(1280, linePosY - (float)((levelData.Notes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * noteSpeedPixelPerSec));
 		}
 	}
 
@@ -267,12 +138,12 @@ public partial class Game : Node2D
 				StartAtSec = 0.001,
 				Duration = 0.2,
 				FadeInSec = 0,
-				FadeOutSec = 0.5,
+				FadeOutSec = 0.4,
 			});
 		}
 	}
 
-	Note.Accuracy TryToFireBeatNote(Note.Color color)
+	private Note.Accuracy TryToFireBeatNote(Note.Color color)
 	{
 		if (levelData.Notes.Count == 0) return Note.Accuracy.None;
 
@@ -294,7 +165,7 @@ public partial class Game : Node2D
 		{
 			Text = $"{(candidate == null ? "No candidate" : $"{minDistance:F4}")}",
 			Font = "res://Fonts/SourceCodePro-Light.ttf",
-			Color = new Color(1, 1, 1, 0.2f),
+			Color = new Color(1, 1, 1, 0.15f),
 			Alignment = new AnimatedText.TextAlignment() { Horizontal = HorizontalAlignment.Right },
 			Position = new Vector2(1260, 890),
 			Velocity = new Vector2(-200, 0),
@@ -302,7 +173,7 @@ public partial class Game : Node2D
 			StartAtSec = 0.001,
 			Duration = 0.2,
 			FadeInSec = 0,
-			FadeOutSec = 0.6,
+			FadeOutSec = 0.4,
 		});
 
 		if (candidate == null) return Note.Accuracy.None;
@@ -320,16 +191,62 @@ public partial class Game : Node2D
 		}
 	}
 
-	void GetNodes()
+	private void CreateLevelData()
 	{
-		musicPlayer = GetNode<AudioStreamPlayer>("musicPlayer");
-		label = GetNode<Label>("UI/Label");
+		levelData = new LevelData(new MusicData
+		{
+			Title = "Blue Parrot",
+			Composer = "Romain Garcia",
+			BPM = 123,
+			OffsetSec = 0,
+		});
+		levelData.StartComposing();
+		levelData.AddPause(64);
+		for (int i = 0; i < 32; i++)
+			levelData.AddNoteAndPause(Note.Color.Green, 1);
+
+		for (int i = 0; i < 8; i++)
+			levelData.AddNoteAndPause(Note.Color.Red, 1);
+		for (int i = 0; i < 8; i++)
+			levelData.AddNoteAndPause(Note.Color.Blue, 1);
+		for (int i = 0; i < 8; i++)
+			levelData.AddNoteAndPause(Note.Color.Yellow, 1);
+		for (int i = 0; i < 6; i++)
+			levelData.AddNoteAndPause(Note.Color.Green, 1);
+		levelData.AddPause(2);
+
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Blue, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Yellow, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Blue, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
+		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
+		levelData.AddNoteAndPause(Note.Color.Yellow, 1.5);
+		levelData.AddNote(Note.Color.Green);
 	}
 
-	void CreateNotes()
+	private void GetNodes()
+	{
+		musicPlayer = GetNode<AudioStreamPlayer>("musicPlayer");
+		lCorrection = GetNode<Label>("UI/Correction");
+		lSmoothen = GetNode<Label>("UI/Smoothen");
+		lPlayhead = GetNode<Label>("UI/Playhead");
+		lSmoothPlayhead = GetNode<Label>("UI/SmoothPlayhead");
+		lDifference = GetNode<Label>("UI/Difference");
+	}
+
+	private void CreateNotes()
 	{
 		notes = new List<Sprite2D>();
-		test = new List<Sprite2D>();
 		PackedScene noteSprite;
 
 		foreach (Note note in levelData.Notes)
@@ -353,12 +270,71 @@ public partial class Game : Node2D
 					break;
 			}
 			Sprite2D instance = noteSprite.Instantiate<Sprite2D>();
-			Sprite2D instance2 = noteSprite.Instantiate<Sprite2D>();
 			instance.Position = new Vector2(1280, (float)(linePosY - note.TimeStampSec * noteSpeedPixelPerSec));
 			notes.Add(instance);
-			test.Add(instance2);
 			GetNode<CanvasLayer>("UI").AddChild(instance);
-			GetNode<CanvasLayer>("UI").AddChild(instance2);
 		}
+	}
+
+	private void CreateTexts()
+	{
+		GetNode("UI").AddChild(new AnimatedTitle()
+		{
+			Text = "MELODICA",
+			Position = new Vector2(1280, 200),
+			StartAtSec = 0.01,
+			Duration = 4.5,
+			FadeInSec = 0,
+			FadeOutSec = 3,
+			Music = levelData.Music,
+			LetterExpansionAnimation = false,
+		});
+		GetNode("UI").AddChild(new AnimatedTitle()
+		{
+			Text = "TUTORIAL",
+			Position = new Vector2(1280, 200),
+			StartAtSec = 4,
+			Duration = 5.5,
+			FadeInSec = 3,
+			FadeOutSec = 3,
+			Music = levelData.Music,
+			LetterExpansionAnimation = false,
+		});
+		GetNode("UI").AddChild(new AnimatedLabel()
+		{
+			Text = "Hit the 'A' button when a note reaches the line!",
+			Position = new Vector2(1280, 500),
+			StartAtSec = 15.5,
+			Duration = 10.5,
+			FadeInSec = 1,
+			FadeOutSec = 0.3,
+		});
+		GetNode("UI").AddChild(new AnimatedLabel()
+		{
+			Text = "Press the button that matches the note!",
+			Position = new Vector2(1600, 800),
+			StartAtSec = 42,
+			Duration = 8.5,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
+		GetNode("UI").AddChild(new AnimatedLabel()
+		{
+			Text = "You get feedback on accuracy.",
+			Position = new Vector2(1600, 800),
+			StartAtSec = 59,
+			Duration = 8.5,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
+		GetNode("UI").AddChild(new AnimatedLabel()
+		{
+			Text = "First tutorial finished!",
+			Position = new Vector2(1280, 500),
+			StartAtSec = 78,
+			Duration = 6,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
 	}
 }
