@@ -1,21 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://dfseh2nlnqk48"]
+[gd_scene load_steps=7 format=3 uid="uid://dfseh2nlnqk48"]
 
-[ext_resource type="Script" path="res://Scripts/MainMenu.cs" id="1_bug31"]
-[ext_resource type="AudioStream" uid="uid://jj7a2exrq3ux" path="res://Music/Pulse of Darkness.mp3" id="2_1pqhv"]
-[ext_resource type="Script" path="res://Scripts/MusicPlayer.cs" id="3_lesv6"]
+[ext_resource type="Script" path="res://Scripts/Menus/MainMenu.cs" id="1_bug31"]
 [ext_resource type="Script" path="res://Scripts/Camera.cs" id="3_xl4os"]
 [ext_resource type="Theme" uid="uid://cf7rjg5kmbto1" path="res://Themes/MenuTheme.tres" id="4_amdwp"]
-[ext_resource type="Script" path="res://Scripts/PlayMenu.cs" id="4_i4ner"]
-[ext_resource type="Script" path="res://Scripts/SettingsMenu.cs" id="12_l6yye"]
+[ext_resource type="Script" path="res://Scripts/Menus/PlayMenu.cs" id="4_i4ner"]
+[ext_resource type="Script" path="res://Scripts/Menus/SettingsMenu.cs" id="12_l6yye"]
 [ext_resource type="FontFile" uid="uid://tbbinxn4vijd" path="res://Fonts/Inter/Inter-Light.ttf" id="13_7iqpg"]
 
 [node name="Menu" type="Node2D"]
 position = Vector2(1280, 540)
 script = ExtResource("1_bug31")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_1pqhv")
-script = ExtResource("3_lesv6")
 
 [node name="Background" type="CanvasLayer" parent="."]
 visible = false

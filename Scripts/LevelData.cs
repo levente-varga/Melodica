@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using Godot;
 
 public struct MusicData
@@ -9,6 +8,7 @@ public struct MusicData
     public double BPM;
     public double Length;
     public double OffsetSec;
+    public string FilePath;
 }
 
 public class Note
@@ -29,11 +29,7 @@ public class Note
     const float acceptableAccuracyRangeSec = 0.25f;
     public enum Accuracy
     {
-        None,       // Button press but no note in range
-        Perfect,    // 
-        Good,       // 
-        Acceptable,         // 
-        Miss,       // Note left range without firing
+        None, Perfect, Good, Acceptable,
     }
 
     public Note(Color button, double beat, double bpm, double offsetSec)

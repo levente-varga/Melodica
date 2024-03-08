@@ -17,9 +17,10 @@ public partial class SettingsMenu : Node2D
 	Label lMusic;
 	Label lSoundEffects;
 
-	AudioStreamPlayer musicPlayer;
+	MusicPlayer musicPlayer;
 
-	SettingsMenu() {
+	SettingsMenu()
+	{
 		LoadSettings();
 	}
 
@@ -31,50 +32,55 @@ public partial class SettingsMenu : Node2D
 		UpdateUIValues();
 
 		obResolution.Clear();
-		for (int i = 0; i < Settings.Display.AllowedResolutions.Count; i++) {
+		for (int i = 0; i < Settings.Display.AllowedResolutions.Count; i++)
+		{
 			var resolution = Settings.Display.AllowedResolutions[i];
-			obResolution.AddItem(string.Format("{0}x{1}", resolution.X, resolution.Y));	
+			obResolution.AddItem(string.Format("{0}x{1}", resolution.X, resolution.Y));
 			if (resolution == Settings.Display.Resolution) obResolution.Selected = i;
 		}
 	}
 
 	public override void _Process(double delta)
 	{
-		
+
 	}
 
-	private void SetupViewport() {
+	private void SetupViewport()
+	{
 		// Sets MSAA based on setting
 		RenderingServer.ViewportSetMsaa2D(GetViewport().GetViewportRid(), Settings.Display.MSAA
 			? RenderingServer.ViewportMsaa.Msaa8X
-			: RenderingServer.ViewportMsaa.Disabled); 
+			: RenderingServer.ViewportMsaa.Disabled);
 	}
 
-	private void GetNodes() {
+	private void GetNodes()
+	{
 		// Audio settings
 		sMaster = GetNode<HSlider>("UI/TabContainer/AUDIO/Settings/Master/Value");
-		lMaster = GetNode<Label>  ("UI/TabContainer/AUDIO/Settings/Master/ValueLabel");
+		lMaster = GetNode<Label>("UI/TabContainer/AUDIO/Settings/Master/ValueLabel");
 		sMusic = GetNode<HSlider>("UI/TabContainer/AUDIO/Settings/Music/Value");
-		lMusic = GetNode<Label>  ("UI/TabContainer/AUDIO/Settings/Music/ValueLabel");
+		lMusic = GetNode<Label>("UI/TabContainer/AUDIO/Settings/Music/ValueLabel");
 		sSoundEffects = GetNode<HSlider>("UI/TabContainer/AUDIO/Settings/SoundEffects/Value");
-		lSoundEffects = GetNode<Label>  ("UI/TabContainer/AUDIO/Settings/SoundEffects/ValueLabel");
+		lSoundEffects = GetNode<Label>("UI/TabContainer/AUDIO/Settings/SoundEffects/ValueLabel");
 
 		// Game settings
 		cbMenuAnimations = GetNode<CheckButton>("UI/TabContainer/GAME/Settings/MenuAnimations/Value");
-		
+
 		// Display settings
 		obResolution = GetNode<OptionButton>("UI/TabContainer/DISPLAY/Settings/ScreenResolution/Value");
 		cbWindowed = GetNode<CheckButton>("UI/TabContainer/DISPLAY/Settings/Windowed/Value");
 		cbVSync = GetNode<CheckButton>("UI/TabContainer/DISPLAY/Settings/VSync/Value");
 		cbMSAA = GetNode<CheckButton>("UI/TabContainer/DISPLAY/Settings/MSAA/Value");
-		
+
 		// Controls settings
 
 		// Other
-		musicPlayer = GetParent().GetNode<AudioStreamPlayer>("AudioStreamPlayer");
+		musicPlayer = new(Musics.PulseOfDrakness);
+		AddChild(musicPlayer);
 	}
 
-	private void SubscribeToEvents() {
+	private void SubscribeToEvents()
+	{
 		sMaster.ValueChanged += OnMasterAudioChanged;
 		sMusic.ValueChanged += OnMusicAudioChanged;
 		sSoundEffects.ValueChanged += OnSoundEffectsAudioChanged;
@@ -91,7 +97,8 @@ public partial class SettingsMenu : Node2D
 		sSoundEffects.DragEnded += OnAudioDragEnded;
 	}
 
-	private void UpdateUIValues() {
+	private void UpdateUIValues()
+	{
 		cbWindowed.ButtonPressed = Settings.Display.Windowed;
 		cbVSync.ButtonPressed = Settings.Display.VSync;
 		cbMSAA.ButtonPressed = Settings.Display.MSAA;
@@ -102,57 +109,68 @@ public partial class SettingsMenu : Node2D
 		UpdateAudioValueLabels();
 	}
 
-	private void UpdateAudioValueLabels() {
+	private void UpdateAudioValueLabels()
+	{
 		lMaster.Text = ((int)(Settings.Audio.Master * 100)).ToString();
 		lMusic.Text = ((int)(Settings.Audio.Music * 100)).ToString();
 		lSoundEffects.Text = ((int)(Settings.Audio.SoundEffects * 100)).ToString();
 	}
 
-	private void LoadSettings() {
+	private void LoadSettings()
+	{
 		Settings.Load();
 	}
 
-	void OnResolutionChanged(long selected) {
+	void OnResolutionChanged(long selected)
+	{
 		Settings.Display.Resolution = Settings.Display.AllowedResolutions[(int)selected];
 		Settings.Save();
 	}
 
-	void OnMasterAudioChanged(double value) {
+	void OnMasterAudioChanged(double value)
+	{
 		Settings.Audio.Master = value;
 		UpdateAudioValueLabels();
 	}
 
-	void OnMusicAudioChanged(double value) {
+	void OnMusicAudioChanged(double value)
+	{
 		Settings.Audio.Music = value;
 		UpdateAudioValueLabels();
 	}
 
-	void OnSoundEffectsAudioChanged(double value) {
+	void OnSoundEffectsAudioChanged(double value)
+	{
 		Settings.Audio.SoundEffects = value;
 		UpdateAudioValueLabels();
 	}
 
-	void OnAudioDragEnded(bool valueChanged) {
+	void OnAudioDragEnded(bool valueChanged)
+	{
 		if (valueChanged) Settings.Save();
 	}
 
-	private void OnWindowedEnabledChanged(bool value) {
+	private void OnWindowedEnabledChanged(bool value)
+	{
 		Settings.Display.Windowed = value;
 		Settings.Save();
 	}
 
-	private void OnMSAAEnabledChanged(bool value) {
+	private void OnMSAAEnabledChanged(bool value)
+	{
 		Settings.Display.MSAA = value;
 		Settings.Save();
 		SetupViewport();
 	}
 
-	private void OnVSyncEnabledChanged(bool value) {
+	private void OnVSyncEnabledChanged(bool value)
+	{
 		Settings.Display.VSync = value;
 		Settings.Save();
 	}
 
-	private void OnMenuAnimationsEnabledChanged(bool value) {
+	private void OnMenuAnimationsEnabledChanged(bool value)
+	{
 		Settings.Game.MenuAnimations = value;
 		Settings.Save();
 	}

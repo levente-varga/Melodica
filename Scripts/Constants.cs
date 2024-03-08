@@ -16,3 +16,23 @@ public static class Colors
     public static Color ButtonRed { get; } = new Color(0.94f, 0.14f, 0.14f, 1f);
     public static Color ButtonYellow { get; } = new Color(1f, 0.78f, 0f, 1f);
 }
+
+public static class Musics
+{
+    public static MusicData PulseOfDrakness = new()
+    {
+        Title = "Pulse of Darkness",
+        Composer = "Leblanc",
+        BPM = 122,
+        OffsetSec = 0,
+        FilePath = "res://Music/Pulse of Darkness.mp3"
+    };
+    public static MusicData BlueParrot = new()
+    {
+        Title = "Blue Parrot",
+        Composer = "Romain Garcia",
+        BPM = 123,
+        OffsetSec = 0,
+        FilePath = "res://Music/Blue Parrot.mp3"
+    };
+}

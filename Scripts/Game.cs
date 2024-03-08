@@ -1,22 +1,20 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public partial class Game : Node2D
 {
 	LevelData levelData;
 
-	AudioStreamPlayer musicPlayer;
+	MusicPlayer musicPlayer;
 
-	Label lCorrection;
+	Label lBeat;
 	Label lSmoothen;
 	Label lPlayhead;
 	Label lSmoothPlayhead;
 	Label lDifference;
-	Timer correctionTimer;
 
 	bool showAccuracy = false;
+	int perfectStreak = 0;
 
 	const int linePosY = 860;
 	List<Sprite2D> notes;
@@ -24,19 +22,10 @@ public partial class Game : Node2D
 
 	public override void _Ready()
 	{
-		GetNodes();
 		CreateLevelData();
+		GetNodes();
 		CreateNotes();
 		CreateTexts();
-
-		correctionTimer = new Timer()
-		{
-			WaitTime = 0.5f,
-			Autostart = true,
-			OneShot = false,
-		};
-		correctionTimer.Timeout += CalculatCorrection;
-		AddChild(correctionTimer);
 
 		Timer showAccuracyTimer = new Timer()
 		{
@@ -51,18 +40,10 @@ public partial class Game : Node2D
 		AddChild(showAccuracyTimer);
 	}
 
-	double smoothPlayhead = 0;
-	double remainingCorrection = 0;
-	double correctionFactor = 30;
 	bool smoothen = true;
 	bool debug = true;
 	public override void _Process(double delta)
 	{
-		smoothPlayhead += delta;
-		double correction = remainingCorrection / correctionFactor;
-		smoothPlayhead += correction;
-		remainingCorrection -= correction;
-
 		MoveNotes(delta);
 		UpdateDebugInfo();
 		HandleInput();
@@ -71,7 +52,8 @@ public partial class Game : Node2D
 	private void UpdateDebugInfo()
 	{
 		double playhead = musicPlayer.GetPlaybackPosition();
-		lCorrection.Text = string.Format("Correction: {0}{1:F4}", remainingCorrection < 0 ? "-" : " ", Mathf.Abs(remainingCorrection));
+		double smoothPlayhead = musicPlayer.GetSmoothPlaybackPosition();
+		lBeat.Text = string.Format("Beat:        {0:F1}", musicPlayer.Beat);
 		lSmoothen.Text = string.Format("Smoothen:    {0}", smoothen ? "true " : "false");
 		lPlayhead.Text = string.Format("Playhead:    {0:F4}", playhead);
 		lSmoothPlayhead.Text = string.Format("Smooth:      {0:F4}", smoothPlayhead);
@@ -79,16 +61,10 @@ public partial class Game : Node2D
 		lDifference.Text = string.Format("Difference: {0}{1:F4}", difference < 0 ? "-" : " ", Mathf.Abs(difference));
 	}
 
-	private void CalculatCorrection()
-	{
-		double playhead = musicPlayer.GetPlaybackPosition();
-		double difference = playhead - smoothPlayhead;
-		remainingCorrection += difference;
-	}
-
 	private void MoveNotes(double delta)
 	{
 		float playhead = musicPlayer.GetPlaybackPosition();
+		float smoothPlayhead = musicPlayer.GetSmoothPlaybackPosition();
 
 		for (int i = 0; i < notes.Count; i++)
 		{
@@ -117,9 +93,9 @@ public partial class Game : Node2D
 			accuracy = TryToFireBeatNote(Note.Color.Yellow);
 		}
 
-		if (accuracy != Note.Accuracy.None)
+		if (accuracy != Note.Accuracy.None && showAccuracy)
 		{
-			string text = "";
+			string text;
 			switch (accuracy)
 			{
 				case Note.Accuracy.Perfect: text = "Perfect"; break;
@@ -127,7 +103,16 @@ public partial class Game : Node2D
 				case Note.Accuracy.Acceptable: text = "OK"; break;
 				default: text = "?"; break;
 			}
-			if (showAccuracy) GetNode("UI").AddChild(new AnimatedLabel()
+			if (accuracy == Note.Accuracy.Perfect)
+			{
+				perfectStreak++;
+				if (perfectStreak > 1) text = $"x{perfectStreak} {text}";
+			}
+			else
+			{
+				perfectStreak = 0;
+			}
+			GetNode("UI").AddChild(new AnimatedLabel()
 			{
 				Text = text,
 				Position = new Vector2(1260, 830),
@@ -147,7 +132,7 @@ public partial class Game : Node2D
 	{
 		if (levelData.Notes.Count == 0) return Note.Accuracy.None;
 
-		//float playhead = musicPlayer.GetPlaybackPosition();
+		float smoothPlayhead = musicPlayer.GetSmoothPlaybackPosition();
 		Note candidate = null;
 		double minDistance = 0;
 
@@ -193,15 +178,11 @@ public partial class Game : Node2D
 
 	private void CreateLevelData()
 	{
-		levelData = new LevelData(new MusicData
-		{
-			Title = "Blue Parrot",
-			Composer = "Romain Garcia",
-			BPM = 123,
-			OffsetSec = 0,
-		});
+		levelData = new LevelData(Musics.BlueParrot);
 		levelData.StartComposing();
-		levelData.AddPause(64);
+		levelData.AddPause(1);
+		levelData.AddNote(Note.Color.Green);
+		levelData.AddPause(63);
 		for (int i = 0; i < 32; i++)
 			levelData.AddNoteAndPause(Note.Color.Green, 1);
 
@@ -236,12 +217,14 @@ public partial class Game : Node2D
 
 	private void GetNodes()
 	{
-		musicPlayer = GetNode<AudioStreamPlayer>("musicPlayer");
-		lCorrection = GetNode<Label>("UI/Correction");
+		lBeat = GetNode<Label>("UI/Correction");
 		lSmoothen = GetNode<Label>("UI/Smoothen");
 		lPlayhead = GetNode<Label>("UI/Playhead");
 		lSmoothPlayhead = GetNode<Label>("UI/SmoothPlayhead");
 		lDifference = GetNode<Label>("UI/Difference");
+
+		musicPlayer = new(levelData.Music);
+		AddChild(musicPlayer);
 	}
 
 	private void CreateNotes()
