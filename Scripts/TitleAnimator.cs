@@ -1,10 +1,9 @@
 using Godot;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public partial class TitleAnimator : Control
 {
-	MusicData music;
+	MusicPlayer musicPlayer;
 
 	const int letterWidth = 150;
 	const int letterGap = 50;
@@ -29,42 +28,49 @@ public partial class TitleAnimator : Control
 	Timer delay;
 
 	Vector2 center = new Vector2(Settings.Display.Resolution.X / 2, 200);
-	public Vector2 Center {
+	public Vector2 Center
+	{
 		get { return center; }
-		set {
+		set
+		{
 			center = new Vector2(
 				Mathf.Clamp(value.X, 0, Settings.Display.Resolution.X),
 				Mathf.Clamp(value.Y, 0, Settings.Display.Resolution.Y));
 		}
 	}
 
-	public TitleAnimator(string title, MusicData music, Vector2 center, bool startInPlace = false) {
+	public TitleAnimator(string title, MusicPlayer musicPlayer, Vector2 center, bool startInPlace = false)
+	{
 		this.title = title;
 		this.center = center;
 		this.startInPlace = startInPlace;
-		this.music = music;
+		this.musicPlayer = musicPlayer;
 	}
 
-	private void CreateLetterSprites() {
+	private void CreateLetterSprites()
+	{
 		letters = new List<Sprite2D>();
-		foreach (char letter in title.ToUpper()) {
-            Sprite2D letterSprite = new Sprite2D
-            {
-                Texture = ImageTexture.CreateFromImage(
+		foreach (char letter in title.ToUpper())
+		{
+			Sprite2D letterSprite = new Sprite2D
+			{
+				Texture = ImageTexture.CreateFromImage(
 					Image.LoadFromFile("res://Assets/Images/Letters/" + letter + ".png")
 				),
 				Position = center
-            };
-            letters.Add(letterSprite);
+			};
+			letters.Add(letterSprite);
 			AddChild(letterSprite);
 		}
 	}
 
-	private void CalculateDesiredPositions() {
+	private void CalculateDesiredPositions()
+	{
 		desiredPositions = new List<Vector2>();
 		int totalWidth = letters.Count * letterWidth + (letters.Count - 1) * letterGap;
 		int leftmostPositionX = (int)center.X - totalWidth / 2 + letterWidth / 2;
-		for (int i = 0; i < letters.Count; i++) {
+		for (int i = 0; i < letters.Count; i++)
+		{
 			int desiredPositionX = leftmostPositionX + i * (letterWidth + letterGap);
 			desiredPositions.Add(new Vector2(desiredPositionX, center.Y));
 		}
@@ -84,11 +90,13 @@ public partial class TitleAnimator : Control
 		beatSkipsLeft = beatSkips;
 
 		if (startInPlace) StartAnimation();
-		else {
-			delay = new Timer { 
-				OneShot = true, 
+		else
+		{
+			delay = new Timer
+			{
+				OneShot = true,
 				WaitTime = placementAnimationDelaySec,
-				Autostart = true, 
+				Autostart = true,
 			};
 			delay.Timeout += StartAnimation;
 			AddChild(delay);
@@ -101,38 +109,44 @@ public partial class TitleAnimator : Control
 		{
 			PutLettersToDesiredPositions();
 		}
-		else if (animationEnabled) 
+		else if (animationEnabled)
 		{
 			AnimateLetters(delta);
 		}
 	}
 
-	private void PutLettersToDesiredPositions() {
+	private void PutLettersToDesiredPositions()
+	{
 		horizontalLerpStrength = desiredLerpStrength;
 		for (int i = 0; i < letters.Count; i++)
 			letters[i].Position = desiredPositions[i];
 	}
 
-	private void StartAnimation() {
+	private void StartAnimation()
+	{
 		animationEnabled = true;
-		metronome = new Timer { 
-			OneShot = false, 
-			Autostart = true, 
-			WaitTime = 60.0 / music.BPM
+		metronome = new Timer
+		{
+			OneShot = false,
+			Autostart = true,
+			WaitTime = 60.0 / musicPlayer.MusicData.BPM
 		};
-		metronome.Timeout += OnMetronomeTick;
-		metronome.TreeEntered += OnMetronomeTick;
+		musicPlayer.OnBeat += OnBeat;
 		AddChild(metronome);
 	}
 
-	private void OnMetronomeTick() {
+	private void OnBeat(int beat)
+	{
 		if (letters.Count == 0) return;
-		if (currentLetter < 0) currentLetter = 0; 
-		else if (currentLetter >= letters.Count) {
-			if (beatSkipsLeft-- > 0) {
+		if (currentLetter < 0) currentLetter = 0;
+		else if (currentLetter >= letters.Count)
+		{
+			if (beatSkipsLeft-- > 0)
+			{
 				return;
 			}
-			else {
+			else
+			{
 				beatSkipsLeft = beatSkips;
 				currentLetter = 0;
 			}
@@ -142,13 +156,15 @@ public partial class TitleAnimator : Control
 		currentLetter++;
 	}
 
-	private void AnimateLetters(double delta) {
-		for (int i = 0; i < letters.Count; i++) {
+	private void AnimateLetters(double delta)
+	{
+		for (int i = 0; i < letters.Count; i++)
+		{
 			Sprite2D letter = letters[i];
 			Vector2 desiredPosition = desiredPositions[i];
 
 			letter.Position = new Vector2(
-				Mathf.Lerp(letter.Position.X, desiredPosition.X, (float)delta * horizontalLerpStrength), 
+				Mathf.Lerp(letter.Position.X, desiredPosition.X, (float)delta * horizontalLerpStrength),
 				Mathf.Lerp(letter.Position.Y, desiredPosition.Y + verticalOffset[i], (float)delta * desiredLerpStrength * 4));
 
 			horizontalLerpStrength = Mathf.Lerp(horizontalLerpStrength, desiredLerpStrength, (float)delta * 0.2f);

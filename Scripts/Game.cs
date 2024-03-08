@@ -269,7 +269,7 @@ public partial class Game : Node2D
 			Duration = 4.5,
 			FadeInSec = 0,
 			FadeOutSec = 3,
-			Music = levelData.Music,
+			MusicPlayer = musicPlayer,
 			LetterExpansionAnimation = false,
 		});
 		GetNode("UI").AddChild(new AnimatedTitle()
@@ -280,7 +280,7 @@ public partial class Game : Node2D
 			Duration = 5.5,
 			FadeInSec = 3,
 			FadeOutSec = 3,
-			Music = levelData.Music,
+			MusicPlayer = musicPlayer,
 			LetterExpansionAnimation = false,
 		});
 		GetNode("UI").AddChild(new AnimatedLabel()

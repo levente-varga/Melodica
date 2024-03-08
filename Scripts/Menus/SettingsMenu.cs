@@ -17,8 +17,6 @@ public partial class SettingsMenu : Node2D
 	Label lMusic;
 	Label lSoundEffects;
 
-	MusicPlayer musicPlayer;
-
 	SettingsMenu()
 	{
 		LoadSettings();
@@ -71,12 +69,6 @@ public partial class SettingsMenu : Node2D
 		cbWindowed = GetNode<CheckButton>("UI/TabContainer/DISPLAY/Settings/Windowed/Value");
 		cbVSync = GetNode<CheckButton>("UI/TabContainer/DISPLAY/Settings/VSync/Value");
 		cbMSAA = GetNode<CheckButton>("UI/TabContainer/DISPLAY/Settings/MSAA/Value");
-
-		// Controls settings
-
-		// Other
-		musicPlayer = new(Musics.PulseOfDrakness);
-		AddChild(musicPlayer);
 	}
 
 	private void SubscribeToEvents()

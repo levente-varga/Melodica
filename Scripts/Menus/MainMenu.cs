@@ -11,9 +11,12 @@ public partial class MainMenu : Node2D
 	private Button bLibrary;
 	private Button bLibraryBack;
 	private Camera camera;
+	private MusicPlayer musicPlayer;
 
 
-	MusicData music = new MusicData {
+
+	MusicData music = new MusicData
+	{
 		Title = "",
 		Composer = "",
 		BPM = 122,
@@ -31,7 +34,8 @@ public partial class MainMenu : Node2D
 	{
 	}
 
-	private void GetNodes() {
+	private void GetNodes()
+	{
 		bPlay = GetNode<Button>("MainMenu/UI/bPlay");
 		bSettings = GetNode<Button>("MainMenu/UI/bSettings");
 		bQuit = GetNode<Button>("MainMenu/UI/bQuit");
@@ -42,9 +46,14 @@ public partial class MainMenu : Node2D
 		bLibraryBack = GetNode<Button>("Library/UI/bBack");
 
 		camera = GetNode<Camera>("Camera");
+
+		// Other
+		musicPlayer = new(Musics.PulseOfDrakness);
+		AddChild(musicPlayer);
 	}
 
-	private void SubscribeToEvents() {
+	private void SubscribeToEvents()
+	{
 		bPlay.Pressed += OnLevelSelectButtonPressed;
 		bSettings.Pressed += OnSettingsButtonPressed;
 		bQuit.Pressed += OnQuitButtonPressed;
@@ -54,38 +63,45 @@ public partial class MainMenu : Node2D
 		bLibrary.Pressed += OnLibraryButtonPressed;
 	}
 
-	private void SetupTitleAnimators() {
-		GetNode("MainMenu/UI").AddChild(new TitleAnimator("MELODICA", music, new Vector2(1280, 200)));
-		GetNode("Settings/UI").AddChild(new TitleAnimator("SETTINGS", music, new Vector2(1280, 200)));
-		GetNode("Play/UI").AddChild(new TitleAnimator("PLAY", music, new Vector2(1280, 200)));
-		GetNode("Library/UI").AddChild(new TitleAnimator("LIBRARY", music, new Vector2(1280, 200)));
+	private void SetupTitleAnimators()
+	{
+		GetNode("MainMenu/UI").AddChild(new TitleAnimator("MELODICA", musicPlayer, new Vector2(1280, 200)));
+		GetNode("Settings/UI").AddChild(new TitleAnimator("SETTINGS", musicPlayer, new Vector2(1280, 200)));
+		GetNode("Play/UI").AddChild(new TitleAnimator("PLAY", musicPlayer, new Vector2(1280, 200)));
+		GetNode("Library/UI").AddChild(new TitleAnimator("LIBRARY", musicPlayer, new Vector2(1280, 200)));
 	}
 
-	private void OnLevelSelectButtonPressed() {
+	private void OnLevelSelectButtonPressed()
+	{
 		camera.DesiredPosition = new Vector2(2560, 0);
 		camera.DesiredRotation = 0;
 	}
 
-	private void OnSettingsButtonPressed() {
+	private void OnSettingsButtonPressed()
+	{
 		camera.DesiredPosition = new Vector2(-2560, 0);
 		camera.DesiredRotation = 0;
 	}
 
-	private void OnQuitButtonPressed() {
+	private void OnQuitButtonPressed()
+	{
 		GetTree().Quit();
 	}
 
-	private void OnLibraryButtonPressed() {
+	private void OnLibraryButtonPressed()
+	{
 		camera.DesiredPosition = new Vector2(2560, 1080);
 		camera.DesiredRotation = 0;
 	}
 
-	private void OnBackButtonPressed() {
+	private void OnBackButtonPressed()
+	{
 		camera.DesiredPosition = new Vector2(0, 0);
 		camera.DesiredRotation = 0;
 	}
 
-	private void OnLibraryBackButtonPressed() {
+	private void OnLibraryBackButtonPressed()
+	{
 		camera.DesiredPosition = new Vector2(2560, 0);
 		camera.DesiredRotation = 0;
 	}

@@ -1,24 +1,22 @@
+using System.Diagnostics;
 using Godot;
 
 public partial class MusicPlayer : AudioStreamPlayer
 {
-	MusicData musicData;
+	public MusicData MusicData { get; private set; }
 	const float volumeFactor = 0.2f;
 	const double correctionFactor = 30;
 	double smoothPlayhead = 0;
 	double remainingCorrection = 0;
 
-	public double Beat
-	{
-		get
-		{
-			return (smoothPlayhead - musicData.OffsetSec) * (musicData.BPM / 60f);
-		}
-	}
+	public event OnBeatEventHandler OnBeat;
+	public delegate void OnBeatEventHandler(int beat);
+
+	public double Beat { get; private set; }
 
 	public MusicPlayer(MusicData musicData)
 	{
-		this.musicData = musicData;
+		MusicData = musicData;
 	}
 
 	public override void _Ready()
@@ -26,7 +24,7 @@ public partial class MusicPlayer : AudioStreamPlayer
 		base._Ready();
 
 		AdjustVolume();
-		Stream = GD.Load<AudioStream>(musicData.FilePath);
+		Stream = GD.Load<AudioStream>(MusicData.FilePath);
 
 		Timer correctionTimer = new()
 		{
@@ -45,6 +43,14 @@ public partial class MusicPlayer : AudioStreamPlayer
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
+
+		double previousBeat = Beat;
+		Beat = (smoothPlayhead - MusicData.OffsetSec) * (MusicData.BPM / 60f);
+		if ((int)previousBeat < (int)Beat || (previousBeat == 0 && Beat > 0))
+		{
+			OnBeat?.Invoke((int)Beat);
+			Debug.WriteLine($"Beat {(int)Beat}");
+		}
 
 		AdjustVolume();
 		ApplyCorrection(delta);

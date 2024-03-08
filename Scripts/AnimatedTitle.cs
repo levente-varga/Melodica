@@ -2,7 +2,7 @@ using Godot;
 
 public partial class AnimatedTitle : AnimatedText
 {
-    public MusicData Music { set; get; } = new MusicData();
+    public MusicPlayer MusicPlayer { set; get; }
     //public bool JumpingLetters { get; set; } = true;
     public bool LetterExpansionAnimation { get; set; } = true;
 
@@ -12,7 +12,7 @@ public partial class AnimatedTitle : AnimatedText
 
         Name = "AnimatedTitle";
 
-        AddChild(new TitleAnimator(Text, Music, new Vector2(0, 0), !LetterExpansionAnimation));
+        AddChild(new TitleAnimator(Text, MusicPlayer, new Vector2(0, 0), !LetterExpansionAnimation));
     }
 
     public override void _Process(double delta)
