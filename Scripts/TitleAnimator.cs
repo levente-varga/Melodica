@@ -54,9 +54,7 @@ public partial class TitleAnimator : Control
 		{
 			Sprite2D letterSprite = new Sprite2D
 			{
-				Texture = ImageTexture.CreateFromImage(
-					Image.LoadFromFile("res://Assets/Images/Letters/" + letter + ".png")
-				),
+				Texture = GD.Load<Texture2D>("res://Assets/Images/Letters/" + letter + ".png"),
 				Position = center
 			};
 			letters.Add(letterSprite);
