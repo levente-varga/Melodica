@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dk12nts17wfv1"
+path="res://.godot/imported/Star Sky.mp3-4da946a6fdc490e7b02007fb99aa5e2d.mp3str"
+
+[deps]
+
+source_file="res://Music/Star Sky.mp3"
+dest_files=["res://.godot/imported/Star Sky.mp3-4da946a6fdc490e7b02007fb99aa5e2d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

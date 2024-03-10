@@ -1,9 +1,12 @@
 using Godot;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 public partial class Game : Node2D
 {
-	LevelData levelData;
+	LevelData loadedLevelData;
+	LevelData beatTutorialLevelData;
+	LevelData melodyTutorialLevelData;
 
 	MusicPlayer musicPlayer;
 
@@ -17,14 +20,16 @@ public partial class Game : Node2D
 	int perfectStreak = 0;
 
 	const int linePosY = 860;
-	List<Sprite2D> notes;
-	const double noteSpeedPixelPerSec = 256;
+	List<Sprite2D> beatNotes;
+	List<MeshInstance2D> melodyNotes;
 
 	public override void _Ready()
 	{
 		CreateLevelData();
+		loadedLevelData = melodyTutorialLevelData;
 		GetNodes();
-		CreateNotes();
+		CreateBeatNotes();
+		CreateMelodyNotes();
 		CreateTexts();
 
 		Timer showAccuracyTimer = new Timer()
@@ -66,9 +71,19 @@ public partial class Game : Node2D
 		float playhead = musicPlayer.GetPlaybackPosition();
 		float smoothPlayhead = musicPlayer.GetSmoothPlaybackPosition();
 
-		for (int i = 0; i < notes.Count; i++)
+		for (int i = 0; i < beatNotes.Count; i++)
 		{
-			notes[i].Position = new Vector2(1280, linePosY - (float)((levelData.Notes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * noteSpeedPixelPerSec));
+			beatNotes[i].Position = new Vector2(
+				beatNotes[i].Position.X,
+				linePosY - (float)((loadedLevelData.BeatNotes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * Note.SpeedPixelPerSec)
+			);
+		}
+		for (int i = 0; i < melodyNotes.Count; i++)
+		{
+			melodyNotes[i].Position = new Vector2(
+				melodyNotes[i].Position.X,
+				linePosY - (float)((loadedLevelData.MelodyNotes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * Note.SpeedPixelPerSec)
+			);
 		}
 	}
 
@@ -78,19 +93,19 @@ public partial class Game : Node2D
 
 		if (Input.IsActionJustPressed("note_green"))
 		{
-			accuracy = TryToFireBeatNote(Note.Color.Green);
+			accuracy = TryToFireBeatNote(BeatNote.Color.Green);
 		}
 		else if (Input.IsActionJustPressed("note_red"))
 		{
-			accuracy = TryToFireBeatNote(Note.Color.Red);
+			accuracy = TryToFireBeatNote(BeatNote.Color.Red);
 		}
 		else if (Input.IsActionJustPressed("note_blue"))
 		{
-			accuracy = TryToFireBeatNote(Note.Color.Blue);
+			accuracy = TryToFireBeatNote(BeatNote.Color.Blue);
 		}
 		else if (Input.IsActionJustPressed("note_yellow"))
 		{
-			accuracy = TryToFireBeatNote(Note.Color.Yellow);
+			accuracy = TryToFireBeatNote(BeatNote.Color.Yellow);
 		}
 
 		if (accuracy != Note.Accuracy.None && showAccuracy)
@@ -128,15 +143,15 @@ public partial class Game : Node2D
 		}
 	}
 
-	private Note.Accuracy TryToFireBeatNote(Note.Color color)
+	private Note.Accuracy TryToFireBeatNote(BeatNote.Color color)
 	{
-		if (levelData.Notes.Count == 0) return Note.Accuracy.None;
+		if (loadedLevelData.BeatNotes.Count == 0) return Note.Accuracy.None;
 
 		float smoothPlayhead = musicPlayer.GetSmoothPlaybackPosition();
-		Note candidate = null;
+		BeatNote candidate = null;
 		double minDistance = 0;
 
-		foreach (Note note in levelData.Notes)
+		foreach (BeatNote note in loadedLevelData.BeatNotes)
 		{
 			if (note.Fired || note.ColorType != color) continue;
 			if (candidate == null || note.GetDistance(smoothPlayhead) < minDistance)
@@ -178,41 +193,91 @@ public partial class Game : Node2D
 
 	private void CreateLevelData()
 	{
-		levelData = new LevelData(Musics.BlueParrot);
-		levelData.StartComposing();
-		levelData.AddPause(1);
-		levelData.AddNote(Note.Color.Green);
-		levelData.AddPause(63);
+		beatTutorialLevelData = new LevelData(Musics.BlueParrot);
+		beatTutorialLevelData.StartComposing();
+		beatTutorialLevelData.AddMelodyNote(MelodyNote.Tones.C, 1, 1);
+		beatTutorialLevelData.AddPause(64);
 		for (int i = 0; i < 32; i++)
-			levelData.AddNoteAndPause(Note.Color.Green, 1);
+			beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 1);
 
 		for (int i = 0; i < 8; i++)
-			levelData.AddNoteAndPause(Note.Color.Red, 1);
+			beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Red, 1);
 		for (int i = 0; i < 8; i++)
-			levelData.AddNoteAndPause(Note.Color.Blue, 1);
+			beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Blue, 1);
 		for (int i = 0; i < 8; i++)
-			levelData.AddNoteAndPause(Note.Color.Yellow, 1);
+			beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Yellow, 1);
 		for (int i = 0; i < 6; i++)
-			levelData.AddNoteAndPause(Note.Color.Green, 1);
-		levelData.AddPause(2);
+			beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 1);
+		beatTutorialLevelData.AddPause(2);
 
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Blue, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Yellow, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Blue, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Red, 1.5);
-		levelData.AddNoteAndPause(Note.Color.Green, 2.5);
-		levelData.AddNoteAndPause(Note.Color.Yellow, 1.5);
-		levelData.AddNote(Note.Color.Green);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Red, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Blue, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Red, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Yellow, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Red, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Blue, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Red, 1.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 2.5);
+		beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Yellow, 1.5);
+		beatTutorialLevelData.AddBeatNote(BeatNote.Color.Green);
+
+		beatTutorialLevelData.FinishComposing();
+
+		melodyTutorialLevelData = new LevelData(Musics.StarSky);
+		melodyTutorialLevelData.StartComposing();
+		melodyTutorialLevelData.AddPause(32);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 3, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 0.25, 0.5);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 3, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 0.25, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 0.25, 0.5);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.E, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 0.25, 0.5);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 3, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 0.25, 0.5);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.E, 3, 0.25, 1);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 0.25, 1);
+
+		melodyTutorialLevelData.FinishComposing();
 	}
 
 	private void GetNodes()
@@ -223,29 +288,29 @@ public partial class Game : Node2D
 		lSmoothPlayhead = GetNode<Label>("UI/SmoothPlayhead");
 		lDifference = GetNode<Label>("UI/Difference");
 
-		musicPlayer = new(levelData.Music);
+		musicPlayer = new(loadedLevelData.Music);
 		AddChild(musicPlayer);
 	}
 
-	private void CreateNotes()
+	private void CreateBeatNotes()
 	{
-		notes = new List<Sprite2D>();
+		beatNotes = new List<Sprite2D>();
 		PackedScene noteSprite;
 
-		foreach (Note note in levelData.Notes)
+		foreach (BeatNote note in loadedLevelData.BeatNotes)
 		{
 			switch (note.ColorType)
 			{
-				case Note.Color.Green:
+				case BeatNote.Color.Green:
 					noteSprite = GD.Load<PackedScene>("res://Scenes/NoteA.tscn");
 					break;
-				case Note.Color.Red:
+				case BeatNote.Color.Red:
 					noteSprite = GD.Load<PackedScene>("res://Scenes/NoteB.tscn");
 					break;
-				case Note.Color.Blue:
+				case BeatNote.Color.Blue:
 					noteSprite = GD.Load<PackedScene>("res://Scenes/NoteX.tscn");
 					break;
-				case Note.Color.Yellow:
+				case BeatNote.Color.Yellow:
 					noteSprite = GD.Load<PackedScene>("res://Scenes/NoteY.tscn");
 					break;
 				default:
@@ -253,9 +318,31 @@ public partial class Game : Node2D
 					break;
 			}
 			Sprite2D instance = noteSprite.Instantiate<Sprite2D>();
-			instance.Position = new Vector2(1280, (float)(linePosY - note.TimeStampSec * noteSpeedPixelPerSec));
-			notes.Add(instance);
+			instance.Position = new Vector2(1280, (float)(linePosY - note.TimeStampSec * Note.SpeedPixelPerSec));
+			beatNotes.Add(instance);
 			GetNode<CanvasLayer>("UI").AddChild(instance);
+		}
+	}
+
+	private void CreateMelodyNotes()
+	{
+		melodyNotes = new List<MeshInstance2D>();
+		foreach (MelodyNote note in loadedLevelData.MelodyNotes)
+		{
+			MeshInstance2D noteMesh = new MeshInstance2D
+			{
+				Mesh = new QuadMesh
+				{
+					Material = new StandardMaterial3D
+					{
+						AlbedoColor = Colors.White
+					}
+				},
+				Scale = new Vector2(10, (float)note.LengthPixel),
+				Position = new Vector2((float)note.PositionX, (float)(linePosY - note.TimeStampSec * Note.SpeedPixelPerSec + note.LengthPixel / 2))
+			};
+			melodyNotes.Add(noteMesh);
+			GetNode<CanvasLayer>("UI").AddChild(noteMesh);
 		}
 	}
 

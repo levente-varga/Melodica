@@ -47,10 +47,7 @@ public partial class MusicPlayer : AudioStreamPlayer
 		double previousBeat = Beat;
 		Beat = (smoothPlayhead - MusicData.OffsetSec) * (MusicData.BPM / 60f);
 		if ((int)previousBeat < (int)Beat || (previousBeat == 0 && Beat > 0))
-		{
 			OnBeat?.Invoke((int)Beat);
-			Debug.WriteLine($"Beat {(int)Beat}");
-		}
 
 		AdjustVolume();
 		ApplyCorrection(delta);

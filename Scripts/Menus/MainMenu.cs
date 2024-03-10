@@ -18,7 +18,7 @@ public partial class MainMenu : Node2D
 	MusicData music = new MusicData
 	{
 		Title = "",
-		Composer = "",
+		Artist = "",
 		BPM = 122,
 		OffsetSec = 0
 	};

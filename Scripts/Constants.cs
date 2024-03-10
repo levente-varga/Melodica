@@ -22,7 +22,7 @@ public static class Musics
     public static MusicData PulseOfDrakness = new()
     {
         Title = "Pulse of Darkness",
-        Composer = "Leblanc",
+        Artist = "Leblanc",
         BPM = 122,
         OffsetSec = 0,
         FilePath = "res://Music/Pulse of Darkness.mp3"
@@ -30,9 +30,17 @@ public static class Musics
     public static MusicData BlueParrot = new()
     {
         Title = "Blue Parrot",
-        Composer = "Romain Garcia",
+        Artist = "Romain Garcia",
         BPM = 123,
         OffsetSec = 0,
         FilePath = "res://Music/Blue Parrot.mp3"
+    };
+    public static MusicData StarSky = new()
+    {
+        Title = "Star Sky",
+        Artist = "Two Steps from Hell",
+        BPM = 130,
+        OffsetSec = 0,
+        FilePath = "res://Music/Star Sky.mp3"
     };
 }
