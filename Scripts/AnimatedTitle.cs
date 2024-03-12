@@ -2,9 +2,43 @@ using Godot;
 
 public partial class AnimatedTitle : AnimatedText
 {
-    public MusicPlayer MusicPlayer { set; get; }
-    //public bool JumpingLetters { get; set; } = true;
-    public bool LetterExpansionAnimation { get; set; } = true;
+    private MusicPlayer musicPlayer;
+    public MusicPlayer MusicPlayer
+    {
+        get { return musicPlayer; }
+        set
+        {
+            musicPlayer = value;
+            if (titleAnimator != null)
+                titleAnimator.MusicPlayer = musicPlayer;
+        }
+    }
+
+    private bool jumpingLetters = true;
+    public bool JumpingLetters
+    {
+        get { return jumpingLetters; }
+        set
+        {
+            jumpingLetters = value;
+            if (titleAnimator != null)
+                titleAnimator.JumpingLetters = jumpingLetters;
+        }
+    }
+
+    private bool letterExpansionAnimation = true;
+    public bool LetterExpansionAnimation
+    {
+        get { return letterExpansionAnimation; }
+        set
+        {
+            letterExpansionAnimation = value;
+            if (titleAnimator != null)
+                titleAnimator.StartInPlace = !LetterExpansionAnimation;
+        }
+    }
+
+    TitleAnimator titleAnimator;
 
     public override void _Ready()
     {
@@ -12,7 +46,15 @@ public partial class AnimatedTitle : AnimatedText
 
         Name = "AnimatedTitle";
 
-        AddChild(new TitleAnimator(Text, MusicPlayer, new Vector2(0, 0), !LetterExpansionAnimation));
+        titleAnimator = new(Text)
+        {
+            Center = new Vector2(0, 0),
+            StartInPlace = !LetterExpansionAnimation,
+            JumpingLetters = JumpingLetters,
+            MusicPlayer = MusicPlayer,
+        };
+
+        AddChild(titleAnimator);
     }
 
     public override void _Process(double delta)

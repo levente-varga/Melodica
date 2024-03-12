@@ -25,12 +25,12 @@ public partial class Game : Node2D
 
 	public override void _Ready()
 	{
-		CreateLevelData();
-		loadedLevelData = melodyTutorialLevelData;
 		GetNodes();
+		CreateLevelData();
+		loadedLevelData = beatTutorialLevelData;
+		SetupLevel();
 		CreateBeatNotes();
 		CreateMelodyNotes();
-		CreateTexts();
 
 		Timer showAccuracyTimer = new Timer()
 		{
@@ -82,7 +82,7 @@ public partial class Game : Node2D
 		{
 			melodyNotes[i].Position = new Vector2(
 				melodyNotes[i].Position.X,
-				linePosY - (float)((loadedLevelData.MelodyNotes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * Note.SpeedPixelPerSec)
+				linePosY - (float)((loadedLevelData.MelodyNotes[i].TimeStampSec - (smoothen ? smoothPlayhead : playhead)) * Note.SpeedPixelPerSec + loadedLevelData.MelodyNotes[i].LengthPixel / 2)
 			);
 		}
 	}
@@ -195,7 +195,6 @@ public partial class Game : Node2D
 	{
 		beatTutorialLevelData = new LevelData(Musics.BlueParrot);
 		beatTutorialLevelData.StartComposing();
-		beatTutorialLevelData.AddMelodyNote(MelodyNote.Tones.C, 1, 1);
 		beatTutorialLevelData.AddPause(64);
 		for (int i = 0; i < 32; i++)
 			beatTutorialLevelData.AddBeatNoteAndPause(BeatNote.Color.Green, 1);
@@ -229,6 +228,65 @@ public partial class Game : Node2D
 		beatTutorialLevelData.AddBeatNote(BeatNote.Color.Green);
 
 		beatTutorialLevelData.FinishComposing();
+
+		beatTutorialLevelData.AddAnimatedText(new AnimatedTitle()
+		{
+			Text = "MELODICA",
+			Position = new Vector2(1280, 200),
+			StartAtSec = 0.01,
+			Duration = 4.5,
+			FadeInSec = 0,
+			FadeOutSec = 3,
+			MusicPlayer = musicPlayer,
+			LetterExpansionAnimation = false,
+		});
+		beatTutorialLevelData.AddAnimatedText(new AnimatedTitle()
+		{
+			Text = "TUTORIAL",
+			Position = new Vector2(1280, 200),
+			StartAtSec = 4,
+			Duration = 5.5,
+			FadeInSec = 3,
+			FadeOutSec = 3,
+			MusicPlayer = musicPlayer,
+			LetterExpansionAnimation = false,
+		});
+		beatTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "Hit the 'A' button when a note reaches the line!",
+			Position = new Vector2(1280, 500),
+			StartAtSec = 15.5,
+			Duration = 10.5,
+			FadeInSec = 1,
+			FadeOutSec = 0.3,
+		});
+		beatTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "Press the button that matches the note!",
+			Position = new Vector2(1600, 800),
+			StartAtSec = 42,
+			Duration = 8.5,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
+		beatTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "You get feedback on accuracy.",
+			Position = new Vector2(1600, 800),
+			StartAtSec = 59,
+			Duration = 8.5,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
+		beatTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "First tutorial finished!",
+			Position = new Vector2(1280, 500),
+			StartAtSec = 78,
+			Duration = 6,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
 
 		melodyTutorialLevelData = new LevelData(Musics.StarSky);
 		melodyTutorialLevelData.StartComposing();
@@ -277,7 +335,117 @@ public partial class Game : Node2D
 		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.E, 3, 0.25, 1);
 		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 0.25, 1);
 
+		// Vocal
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 3, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 3, 4);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 2, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 2, 4, 8);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 3, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 3, 4);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.Asharp, 2, 3, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 3, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.Asharp, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 1.5, 2);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 4.5, 6);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.E, 2, 4.5, 6);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.F, 2, 1.5, 2);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 4.5, 6);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 4.5, 6);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.Asharp, 2, 1.5, 2);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 3, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 3, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.C, 3, 3, 4);
+
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.Asharp, 2, 3, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.G, 2, 1.5, 4);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.A, 2, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.D, 3, 1.5, 2);
+		melodyTutorialLevelData.AddMelodyNoteAndPause(MelodyNote.Tones.E, 3, 3, 4);
+
 		melodyTutorialLevelData.FinishComposing();
+
+		melodyTutorialLevelData.AddAnimatedText(new AnimatedTitle()
+		{
+			Text = "MELODICA",
+			Position = new Vector2(1280, 200),
+			StartAtSec = 0.01,
+			Duration = 4.5,
+			FadeInSec = 0,
+			FadeOutSec = 3,
+			MusicPlayer = musicPlayer,
+			LetterExpansionAnimation = false,
+		});
+		melodyTutorialLevelData.AddAnimatedText(new AnimatedTitle()
+		{
+			Text = "TUTORIAL",
+			Position = new Vector2(1280, 200),
+			StartAtSec = 4,
+			Duration = 5.5,
+			FadeInSec = 3,
+			FadeOutSec = 3,
+			MusicPlayer = musicPlayer,
+			LetterExpansionAnimation = false,
+		});
+		melodyTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "Hit the shown arrow button when a note reaches the line!",
+			Position = new Vector2(1280, 500),
+			StartAtSec = 15.5,
+			Duration = 10.5,
+			FadeInSec = 1,
+			FadeOutSec = 0.3,
+		});
+		melodyTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "Hold the button down while the note lasts!",
+			Position = new Vector2(1600, 800),
+			StartAtSec = 42,
+			Duration = 8.5,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
+		melodyTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "You can chain notes if they are connected.",
+			Position = new Vector2(1600, 800),
+			StartAtSec = 59,
+			Duration = 8.5,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
+		melodyTutorialLevelData.AddAnimatedText(new AnimatedLabel()
+		{
+			Text = "Second tutorial finished!",
+			Position = new Vector2(1280, 500),
+			StartAtSec = 78,
+			Duration = 6,
+			FadeInSec = 1,
+			FadeOutSec = 2,
+		});
 	}
 
 	private void GetNodes()
@@ -287,9 +455,6 @@ public partial class Game : Node2D
 		lPlayhead = GetNode<Label>("UI/Playhead");
 		lSmoothPlayhead = GetNode<Label>("UI/SmoothPlayhead");
 		lDifference = GetNode<Label>("UI/Difference");
-
-		musicPlayer = new(loadedLevelData.Music);
-		AddChild(musicPlayer);
 	}
 
 	private void CreateBeatNotes()
@@ -338,7 +503,7 @@ public partial class Game : Node2D
 						AlbedoColor = Colors.White
 					}
 				},
-				Scale = new Vector2(10, (float)note.LengthPixel),
+				Scale = new Vector2(16, (float)note.LengthPixel),
 				Position = new Vector2((float)note.PositionX, (float)(linePosY - note.TimeStampSec * Note.SpeedPixelPerSec + note.LengthPixel / 2))
 			};
 			melodyNotes.Add(noteMesh);
@@ -346,65 +511,20 @@ public partial class Game : Node2D
 		}
 	}
 
-	private void CreateTexts()
+	private void SetupLevel()
 	{
-		GetNode("UI").AddChild(new AnimatedTitle()
+		musicPlayer = new(loadedLevelData.Music);
+		AddChild(musicPlayer);
+
+		foreach (AnimatedText text in loadedLevelData.AnimatedTexts)
 		{
-			Text = "MELODICA",
-			Position = new Vector2(1280, 200),
-			StartAtSec = 0.01,
-			Duration = 4.5,
-			FadeInSec = 0,
-			FadeOutSec = 3,
-			MusicPlayer = musicPlayer,
-			LetterExpansionAnimation = false,
-		});
-		GetNode("UI").AddChild(new AnimatedTitle()
-		{
-			Text = "TUTORIAL",
-			Position = new Vector2(1280, 200),
-			StartAtSec = 4,
-			Duration = 5.5,
-			FadeInSec = 3,
-			FadeOutSec = 3,
-			MusicPlayer = musicPlayer,
-			LetterExpansionAnimation = false,
-		});
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "Hit the 'A' button when a note reaches the line!",
-			Position = new Vector2(1280, 500),
-			StartAtSec = 15.5,
-			Duration = 10.5,
-			FadeInSec = 1,
-			FadeOutSec = 0.3,
-		});
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "Press the button that matches the note!",
-			Position = new Vector2(1600, 800),
-			StartAtSec = 42,
-			Duration = 8.5,
-			FadeInSec = 1,
-			FadeOutSec = 2,
-		});
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "You get feedback on accuracy.",
-			Position = new Vector2(1600, 800),
-			StartAtSec = 59,
-			Duration = 8.5,
-			FadeInSec = 1,
-			FadeOutSec = 2,
-		});
-		GetNode("UI").AddChild(new AnimatedLabel()
-		{
-			Text = "First tutorial finished!",
-			Position = new Vector2(1280, 500),
-			StartAtSec = 78,
-			Duration = 6,
-			FadeInSec = 1,
-			FadeOutSec = 2,
-		});
+			GetNode("UI").AddChild(text);
+
+			// TODO: this is a code smell
+			if (text is AnimatedTitle)
+			{
+				((AnimatedTitle)text).MusicPlayer = musicPlayer;
+			}
+		}
 	}
 }

@@ -10,6 +10,26 @@ public struct MusicData
     public double Length;
     public double OffsetSec;
     public string FilePath;
+
+    public double BeatToSec(double beat)
+    {
+        return OffsetSec + beat / BPM * 60;
+    }
+
+    public double SecToBeat(double seconds)
+    {
+        return (seconds - OffsetSec) * BPM / 60;
+    }
+
+    public double BeatLengthInSec(double beat)
+    {
+        return beat / BPM * 60;
+    }
+
+    public double SecLengthInBeat(double seconds)
+    {
+        return seconds * BPM / 60;
+    }
 }
 
 
@@ -65,8 +85,8 @@ public abstract class Note
 
 public class MelodyNote : Note
 {
-    const int WidthPixel = 10;
-    const int GapWidthPixel = 5;
+    const int WidthPixel = 16;
+    const int GapWidthPixel = 8;
     public int Octave { get; private set; }
     public Tones Tone { get; private set; }
     public double PositionX { get; private set; }
@@ -149,9 +169,9 @@ public class BeatNote : Note
 
 public class LevelData
 {
-    string title;
     public MusicData Music { get; private set; }
 
+    public List<AnimatedText> AnimatedTexts { get; private set; }
     public List<BeatNote> BeatNotes { get; private set; }
     public List<MelodyNote> MelodyNotes { get; private set; }
 
@@ -163,7 +183,12 @@ public class LevelData
     }
 
     double composingAtBeat;
-    const double hitTresholdSec = 0.5;
+
+    public void AddAnimatedText(AnimatedText animatedText)
+    {
+        if (AnimatedTexts == null) AnimatedTexts = new();
+        AnimatedTexts.Add(animatedText);
+    }
 
     public void StartComposing()
     {

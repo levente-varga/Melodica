@@ -65,10 +65,10 @@ public partial class MainMenu : Node2D
 
 	private void SetupTitleAnimators()
 	{
-		GetNode("MainMenu/UI").AddChild(new TitleAnimator("MELODICA", musicPlayer, new Vector2(1280, 200)));
-		GetNode("Settings/UI").AddChild(new TitleAnimator("SETTINGS", musicPlayer, new Vector2(1280, 200)));
-		GetNode("Play/UI").AddChild(new TitleAnimator("PLAY", musicPlayer, new Vector2(1280, 200)));
-		GetNode("Library/UI").AddChild(new TitleAnimator("LIBRARY", musicPlayer, new Vector2(1280, 200)));
+		GetNode("MainMenu/UI").AddChild(new TitleAnimator("MELODICA") { Center = new Vector2(1280, 200), MusicPlayer = musicPlayer });
+		GetNode("Settings/UI").AddChild(new TitleAnimator("SETTINGS") { Center = new Vector2(1280, 200), MusicPlayer = musicPlayer });
+		GetNode("Play/UI").AddChild(new TitleAnimator("PLAY") { Center = new Vector2(1280, 200), MusicPlayer = musicPlayer });
+		GetNode("Library/UI").AddChild(new TitleAnimator("LIBRARY") { Center = new Vector2(1280, 200), MusicPlayer = musicPlayer });
 	}
 
 	private void OnLevelSelectButtonPressed()

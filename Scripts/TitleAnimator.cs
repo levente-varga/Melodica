@@ -3,7 +3,22 @@ using System.Collections.Generic;
 
 public partial class TitleAnimator : Control
 {
-	MusicPlayer musicPlayer;
+	private MusicPlayer musicPlayer;
+	public MusicPlayer MusicPlayer
+	{
+		get { return musicPlayer; }
+		set
+		{
+			musicPlayer = value;
+			if (value != null && animationEnabled)
+			{
+				StartAnimation();
+			}
+		}
+	}
+
+	public bool JumpingLetters { get; set; } = true;
+	public bool StartInPlace { get; set; } = false;
 
 	const int letterWidth = 150;
 	const int letterGap = 50;
@@ -20,7 +35,6 @@ public partial class TitleAnimator : Control
 	int currentLetter = 0;
 	int beatSkips = 0;
 	int beatSkipsLeft;
-	bool startInPlace = false;
 
 	string title;
 
@@ -39,12 +53,9 @@ public partial class TitleAnimator : Control
 		}
 	}
 
-	public TitleAnimator(string title, MusicPlayer musicPlayer, Vector2 center, bool startInPlace = false)
+	public TitleAnimator(string title)
 	{
 		this.title = title;
-		this.center = center;
-		this.startInPlace = startInPlace;
-		this.musicPlayer = musicPlayer;
 	}
 
 	private void CreateLetterSprites()
@@ -82,12 +93,12 @@ public partial class TitleAnimator : Control
 		verticalOffset = new List<float>();
 		foreach (var _ in letters) verticalOffset.Add(0);
 
-		if (!Settings.Game.MenuAnimations || startInPlace) PutLettersToDesiredPositions();
+		if (!Settings.Game.MenuAnimations || StartInPlace) PutLettersToDesiredPositions();
 
 		beatSkips = (4 - letters.Count % 4) % 4;
 		beatSkipsLeft = beatSkips;
 
-		if (startInPlace) StartAnimation();
+		if (StartInPlace) StartAnimation();
 		else
 		{
 			delay = new Timer
@@ -120,16 +131,25 @@ public partial class TitleAnimator : Control
 			letters[i].Position = desiredPositions[i];
 	}
 
+	private void ResetAnimation()
+	{
+		metronome.Stop();
+		RemoveChild(metronome);
+	}
+
 	private void StartAnimation()
 	{
 		animationEnabled = true;
+
+		if (MusicPlayer == null) return;
+
 		metronome = new Timer
 		{
 			OneShot = false,
 			Autostart = true,
-			WaitTime = 60.0 / musicPlayer.MusicData.BPM
+			WaitTime = 60.0 / MusicPlayer.MusicData?.BPM ?? 1
 		};
-		musicPlayer.OnBeat += OnBeat;
+		MusicPlayer.OnBeat += OnBeat;
 		AddChild(metronome);
 	}
 
@@ -149,7 +169,7 @@ public partial class TitleAnimator : Control
 				currentLetter = 0;
 			}
 		}
-		if (Settings.Game.MenuAnimations)
+		if (Settings.Game.MenuAnimations && JumpingLetters)
 			verticalOffset[currentLetter] = -30 * horizontalLerpStrength;
 		currentLetter++;
 	}

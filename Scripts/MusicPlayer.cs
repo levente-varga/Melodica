@@ -3,7 +3,16 @@ using Godot;
 
 public partial class MusicPlayer : AudioStreamPlayer
 {
-	public MusicData MusicData { get; private set; }
+	private MusicData? musicData;
+	public MusicData? MusicData
+	{
+		get { return musicData; }
+		set
+		{
+			musicData = value;
+			Stream = GD.Load<AudioStream>(MusicData?.FilePath);
+		}
+	}
 	const float volumeFactor = 0.2f;
 	const double correctionFactor = 30;
 	double smoothPlayhead = 0;
@@ -12,7 +21,7 @@ public partial class MusicPlayer : AudioStreamPlayer
 	public event OnBeatEventHandler OnBeat;
 	public delegate void OnBeatEventHandler(int beat);
 
-	public double Beat { get; private set; }
+	public double Beat { get; private set; } = 0;
 
 	public MusicPlayer(MusicData musicData)
 	{
@@ -24,7 +33,7 @@ public partial class MusicPlayer : AudioStreamPlayer
 		base._Ready();
 
 		AdjustVolume();
-		Stream = GD.Load<AudioStream>(MusicData.FilePath);
+		Stream = GD.Load<AudioStream>(MusicData?.FilePath);
 
 		Timer correctionTimer = new()
 		{
@@ -44,8 +53,10 @@ public partial class MusicPlayer : AudioStreamPlayer
 	{
 		base._Process(delta);
 
+		if (MusicData == null) return;
+
 		double previousBeat = Beat;
-		Beat = (smoothPlayhead - MusicData.OffsetSec) * (MusicData.BPM / 60f);
+		Beat = (smoothPlayhead - MusicData?.OffsetSec) * (MusicData?.BPM / 60f) ?? 0;
 		if ((int)previousBeat < (int)Beat || (previousBeat == 0 && Beat > 0))
 			OnBeat?.Invoke((int)Beat);
 
